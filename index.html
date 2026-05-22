@@ -1461,9 +1461,13 @@ function renderWeekends(){const c=document.getElementById('race-group-list');if(
 function selectRace(id){
   const race=RACES.find(r=>r.id===id);
   if(!race)return;
-  // Odjeté nebo uzamčené - zobraz detail s tipy
-  if(isDone(race)||isLocked(race)){
+  // Odjeté závody - zobraz detail místo chyby
+  if(isDone(race)){
     showRaceDetail(id);
+    return;
+  }
+  if(isLocked(race)){
+    toast('🔒 Tipy jsou uzavřeny — kvalifikace již začala','error');
     return;
   }
   selRace=race;document.getElementById('form-race-title').textContent=selRace.name.toUpperCase();(()=>{
