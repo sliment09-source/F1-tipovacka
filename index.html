@@ -994,7 +994,7 @@ header {
   <div class="player-bar" id="active-player-bar">
     <div class="pb-avatar" id="apb-avatar"></div>
     <div class="pb-info"><div class="pb-name" id="apb-name"></div><div class="pb-label">Aktivní hráč</div></div>
-    <button class="btn-ghost" onclick="changePlayer()">Změnit hráče</button>
+    <button class="btn-ghost" onclick="confirmLogout()">Odhlásit</button>
   </div>
 
   <!-- KROK 2: závody -->
@@ -1224,6 +1224,9 @@ function hideOverlay(){
   var resForm = document.getElementById('result-form');
   if(resForm) resForm.setAttribute('data-admin', isAdmin ? '1' : '0');
   appInit();loadResults();
+  // Automaticky nastav prihlaseneho hrace jako aktivniho
+  selPlayer = currentPlayer;
+  showRacesForPlayer();
 }
 
 function loL1(s){var e=document.getElementById('lo-l1');if(e)e.style.display=s?'flex':'none';}
@@ -1405,7 +1408,7 @@ function renderStandings(data,headers){
     </div>`;
   }).join('');
 }
-function showView(v,e){document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('view-'+v).classList.add('active');if(e&&e.target)e.target.classList.add('active');if(v==='saved'){loadTips();renderSavedTips();}if(v==='tip'){loadTips();renderPlayerPickCards();if(selPlayer)showRacesForPlayer();}}
+function showView(v,e){document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('view-'+v).classList.add('active');if(e&&e.target)e.target.classList.add('active');if(v==='saved'){loadTips();renderSavedTips();}if(v==='tip'){loadTips();if(selPlayer){showRacesForPlayer();}else{renderPlayerPickCards();}}}
 function renderPlayerPickCards(){const c=document.getElementById('player-pick-cards');if(!c)return;const allTips=mergeTips();c.innerHTML=PLAYERS.map(p=>{const tipCount=allTips.filter(t=>t.player===p).length;const initials=p.slice(0,2).toUpperCase();const isSelected=selPlayer===p;return`<div class="pcard ${isSelected?'selected':''}" onclick="pickPlayer('${p}')"><div class="pcard-check">✓</div><div class="pcard-avatar">${initials}</div><div class="pcard-name">${p}</div><div class="pcard-count">${tipCount} tip${tipCount===1?'':'ů'}</div></div>`;}).join('');}
 function pickPlayer(p){selPlayer=p;showRacesForPlayer();}
 function showRacesForPlayer(){if(!selPlayer)return;const bar=document.getElementById('active-player-bar');const pickScreen=document.getElementById('player-pick-screen');const racesSection=document.getElementById('races-section');const sub=document.getElementById('tip-page-sub');bar.classList.add('visible');document.getElementById('apb-avatar').textContent=selPlayer.slice(0,2).toUpperCase();document.getElementById('apb-name').textContent=selPlayer;pickScreen.style.display='none';racesSection.style.display='block';sub.textContent='Vyber závod';renderWeekends();}
