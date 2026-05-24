@@ -1241,7 +1241,7 @@ function loB2(s){var b1=document.getElementById('lo-bcr');if(b1)b1.disabled=s;va
 
 
 
-const FALLBACK_URL='https://script.google.com/macros/s/AKfycbwhdo_O0jubW6MLBZHtUMutS5WZXj9_CsdoJM-mnij8iAxz5h3gapE2373vRO2XJPCB/exec';
+const FALLBACK_URL='https://script.google.com/macros/s/AKfycbyLWbyXROLyjtoGxfhn-n0Ev2YBruQDHFCNpgd1PBNmTzcLv41bXuiQPqnd7pFqttQVfw/exec';
 const PLAYERS=['Michal','Milan','Vláďa','Ondra','Markét'];
 const DRIVERS=['Max Verstappen','Isack Hadjar','Lando Norris','Oscar Piastri','George Russell','Kimi Antonelli','Charles Leclerc','Lewis Hamilton','Fernando Alonso','Lance Stroll','Pierre Gasly','Franco Colapinto','Esteban Ocon','Oliver Bearman','Liam Lawson','Arvid Lindblad','Nico Hulkenberg','Gabriel Bortoleto','Carlos Sainz','Alexander Albon','Sergio Perez','Valtteri Bottas','TBA'];
 const TEAMS=['Red Bull Racing','Ferrari','Mercedes','McLaren','Aston Martin','Alpine','Haas','Racing Bulls','Audi','Williams','Cadillac','TBA'];
@@ -2056,62 +2056,26 @@ async function loadF1Results() {
   const btn = document.getElementById('btn-load-api');
   if (btn) { btn.textContent = '⏳ Načítám...'; btn.disabled = true; }
 
-  const sleep = ms => new Promise(r => setTimeout(r, ms));
-
-  // Proxy pres GAS - vola OpenF1 server-side bez CORS problemu
-  async function f1Get(action, params) {
-    const d = await gGet(action, params);
-    if (d && d.error) throw new Error(d.error);
-    return d;
-  }
-
   try {
     const isSprint = selResRace.sprint;
-    const sessionName = isSprint ? 'Sprint' : 'Race';
     
-    // 1. Session key
-    toast('⏳ Načítám session...', 'info');
-    const sessions = await f1Get('f1sessions', {
-      year: apiInfo.year,
-      circuit_short_name: apiInfo.circuit,
-      session_name: sessionName
-    });
-    
-    if (!Array.isArray(sessions) || sessions.length === 0) {
-      toast('Data zatím nejsou dostupná', 'error'); return;
-    }
-    const sessionKey = sessions[0].session_key;
-    await sleep(400);
-
-    // 2. Jezdci
-    toast('⏳ Načítám jezdce...', 'info');
-    const driversData = await f1Get('f1drivers', { session_key: sessionKey });
-    const numToName = {};
-    const numToTeam = {};
-    if (Array.isArray(driversData)) {
-      driversData.forEach(d => {
-        const name = formatDriverName((d.first_name + ' ' + d.last_name).trim());
-        numToName[d.driver_number] = name;
-        numToTeam[d.driver_number] = d.team_name || '';
-      });
-    }
-    await sleep(400);
-
-    // 3. Výsledky
+    // 1. Výsledky závodu/sprintu
     toast('⏳ Načítám výsledky...', 'info');
-    const raceResults = await f1Get('f1results', { session_key: sessionKey });
+    const action = isSprint ? 'f1sprint' : 'f1race';
+    const raceData = await gGet(action, { round: apiInfo.round, year: apiInfo.year });
     
-    if (!Array.isArray(raceResults) || raceResults.length === 0) {
+    if (raceData.error) { toast('Chyba: ' + raceData.error, 'error'); return; }
+    if (!raceData.results || raceData.results.length === 0) {
       toast('Výsledky zatím nejsou dostupné', 'error'); return;
     }
     
-    const finishers = raceResults.filter(r => r.position !== null && !r.dnf)
-                                  .sort((a, b) => a.position - b.position);
-    const dnfs = raceResults.filter(r => r.dnf);
+    const finishers = raceData.results.filter(r => !r.dnf && r.position)
+                                       .sort((a, b) => a.position - b.position);
+    const dnfs = raceData.results.filter(r => r.dnf);
     
     // P1-P5
     ['r-p1','r-p2','r-p3','r-p4','r-p5'].forEach((id, i) => {
-      const name = finishers[i] ? (numToName[finishers[i].driver_number] || '') : '';
+      const name = finishers[i] ? formatDriverName(finishers[i].driver) : '';
       if (name) {
         const el = document.getElementById(id);
         if (el) el.value = name;
@@ -2125,51 +2089,29 @@ async function loadF1Results() {
     
     // Nejlepsi tym
     if (finishers[0]) {
-      const teamName = mapTeamName(numToTeam[finishers[0].driver_number] || '');
+      const teamName = mapTeamName(finishers[0].team || '');
       const teamEl = document.getElementById('r-team');
       if (teamEl) teamEl.value = teamName;
       if (typeof selectDriver === 'function') selectDriver('r-team', teamName, true);
     }
-    await sleep(400);
-
-    // 4. Safety Car
-    const rcData = await f1Get('f1racecontrol', { session_key: sessionKey });
-    if (Array.isArray(rcData)) {
-      const hasSC = rcData.some(r => r.message &&
-        (r.message.includes('SAFETY CAR') || r.message.includes('VIRTUAL SAFETY CAR')));
-      if (hasSC) {
-        rSC = 'ANO';
-        document.getElementById('r-sc-yes').className = 'toggle yes';
-        document.getElementById('r-sc-no').className = 'toggle';
-      }
-    }
-    await sleep(400);
-
-    // 5. Pole Position
-    const qualiName = isSprint ? 'Sprint Qualifying' : 'Qualifying';
-    const qualiSessions = await f1Get('f1sessions', {
-      year: apiInfo.year,
-      circuit_short_name: apiInfo.circuit,
-      session_name: qualiName
-    });
-    if (Array.isArray(qualiSessions) && qualiSessions.length > 0) {
-      await sleep(400);
-      const qualiKey = qualiSessions[0].session_key;
-      const qualiRes = await f1Get('f1results', { session_key: qualiKey });
-      if (Array.isArray(qualiRes)) {
-        const pole = qualiRes.find(r => r.position === 1);
-        if (pole) {
-          const poleName = numToName[pole.driver_number] || '';
-          if (poleName) {
-            const poleEl = document.getElementById('r-pole');
-            if (poleEl) poleEl.value = poleName;
-            if (typeof selectDriver === 'function') selectDriver('r-pole', poleName, true);
-          }
+    
+    // 2. Pole Position z kvalifikace
+    toast('⏳ Načítám kvalifikaci...', 'info');
+    const qualiData = await gGet('f1quali', { round: apiInfo.round, year: apiInfo.year });
+    if (!qualiData.error && qualiData.results && qualiData.results.length > 0) {
+      const pole = qualiData.results.find(r => r.position === 1);
+      if (pole) {
+        const poleName = formatDriverName(pole.driver);
+        if (poleName) {
+          const poleEl = document.getElementById('r-pole');
+          if (poleEl) poleEl.value = poleName;
+          if (typeof selectDriver === 'function') selectDriver('r-pole', poleName, true);
         }
       }
     }
-
-    toast('✓ Výsledky načteny z F1 API! Zkontroluj FL a ulož.', 'success');
+    
+    // SC - nelze automaticky, zadej rucne
+    toast('✓ Výsledky načteny! Zkontroluj FL a SC a ulož.', 'success');
     
   } catch(e) {
     console.error('F1 API error:', e);
