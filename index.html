@@ -2056,26 +2056,57 @@ async function loadF1Results() {
   const btn = document.getElementById('btn-load-api');
   if (btn) { btn.textContent = '⏳ Načítám...'; btn.disabled = true; }
 
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
   try {
     const isSprint = selResRace.sprint;
+    const sessionName = isSprint ? 'Sprint' : 'Race';
     
-    // 1. Výsledky závodu/sprintu
+    // 1. Session key pres GAS proxy
+    toast('⏳ Načítám session...', 'info');
+    const sessions = await gGet('f1sessions', {
+      year: apiInfo.year,
+      circuit_short_name: apiInfo.circuit,
+      session_name: sessionName
+    });
+    
+    console.log('Sessions:', JSON.stringify(sessions));
+    
+    if (!Array.isArray(sessions) || sessions.length === 0) {
+      toast('Data zatím nejsou dostupná', 'error'); return;
+    }
+    const sessionKey = sessions[0].session_key;
+    await sleep(600);
+
+    // 2. Jezdci
+    toast('⏳ Načítám jezdce...', 'info');
+    const driversData = await gGet('f1drivers', { session_key: sessionKey });
+    const numToName = {}, numToTeam = {};
+    if (Array.isArray(driversData)) {
+      driversData.forEach(d => {
+        numToName[d.driver_number] = formatDriverName((d.first_name + ' ' + d.last_name).trim());
+        numToTeam[d.driver_number] = d.team_name || '';
+      });
+    }
+    await sleep(600);
+
+    // 3. Vysledky
     toast('⏳ Načítám výsledky...', 'info');
-    const action = isSprint ? 'f1sprint' : 'f1race';
-    const raceData = await gGet(action, { round: apiInfo.round, year: apiInfo.year });
+    const raceResults = await gGet('f1results', { session_key: sessionKey });
     
-    if (raceData.error) { toast('Chyba: ' + raceData.error, 'error'); return; }
-    if (!raceData.results || raceData.results.length === 0) {
+    console.log('Results:', JSON.stringify(raceResults).substring(0, 200));
+    
+    if (!Array.isArray(raceResults) || raceResults.length === 0) {
       toast('Výsledky zatím nejsou dostupné', 'error'); return;
     }
     
-    const finishers = raceData.results.filter(r => !r.dnf && r.position)
-                                       .sort((a, b) => a.position - b.position);
-    const dnfs = raceData.results.filter(r => r.dnf);
+    const finishers = raceResults.filter(r => r.position !== null && !r.dnf)
+                                  .sort((a, b) => a.position - b.position);
+    const dnfs = raceResults.filter(r => r.dnf);
     
     // P1-P5
     ['r-p1','r-p2','r-p3','r-p4','r-p5'].forEach((id, i) => {
-      const name = finishers[i] ? formatDriverName(finishers[i].driver) : '';
+      const name = finishers[i] ? (numToName[finishers[i].driver_number] || '') : '';
       if (name) {
         const el = document.getElementById(id);
         if (el) el.value = name;
@@ -2089,28 +2120,50 @@ async function loadF1Results() {
     
     // Nejlepsi tym
     if (finishers[0]) {
-      const teamName = mapTeamName(finishers[0].team || '');
+      const teamName = mapTeamName(numToTeam[finishers[0].driver_number] || '');
       const teamEl = document.getElementById('r-team');
       if (teamEl) teamEl.value = teamName;
       if (typeof selectDriver === 'function') selectDriver('r-team', teamName, true);
     }
-    
-    // 2. Pole Position z kvalifikace
-    toast('⏳ Načítám kvalifikaci...', 'info');
-    const qualiData = await gGet('f1quali', { round: apiInfo.round, year: apiInfo.year });
-    if (!qualiData.error && qualiData.results && qualiData.results.length > 0) {
-      const pole = qualiData.results.find(r => r.position === 1);
-      if (pole) {
-        const poleName = formatDriverName(pole.driver);
-        if (poleName) {
-          const poleEl = document.getElementById('r-pole');
-          if (poleEl) poleEl.value = poleName;
-          if (typeof selectDriver === 'function') selectDriver('r-pole', poleName, true);
+    await sleep(600);
+
+    // 4. Safety Car
+    const rcData = await gGet('f1racecontrol', { session_key: sessionKey });
+    if (Array.isArray(rcData)) {
+      const hasSC = rcData.some(r => r.message &&
+        (r.message.includes('SAFETY CAR') || r.message.includes('VIRTUAL SAFETY CAR')));
+      if (hasSC) {
+        rSC = 'ANO';
+        document.getElementById('r-sc-yes').className = 'toggle yes';
+        document.getElementById('r-sc-no').className = 'toggle';
+      }
+    }
+    await sleep(600);
+
+    // 5. Pole Position z qualifying
+    const qualiName = isSprint ? 'Sprint Qualifying' : 'Qualifying';
+    const qualiSessions = await gGet('f1sessions', {
+      year: apiInfo.year,
+      circuit_short_name: apiInfo.circuit,
+      session_name: qualiName
+    });
+    if (Array.isArray(qualiSessions) && qualiSessions.length > 0) {
+      await sleep(600);
+      const qualiKey = qualiSessions[0].session_key;
+      const qualiRes = await gGet('f1results', { session_key: qualiKey });
+      if (Array.isArray(qualiRes)) {
+        const pole = qualiRes.find(r => r.position === 1);
+        if (pole) {
+          const poleName = numToName[pole.driver_number] || '';
+          if (poleName) {
+            const poleEl = document.getElementById('r-pole');
+            if (poleEl) poleEl.value = poleName;
+            if (typeof selectDriver === 'function') selectDriver('r-pole', poleName, true);
+          }
         }
       }
     }
-    
-    // SC - nelze automaticky, zadej rucne
+
     toast('✓ Výsledky načteny! Zkontroluj FL a SC a ulož.', 'success');
     
   } catch(e) {
