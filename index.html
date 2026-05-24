@@ -2121,8 +2121,9 @@ async function loadF1Results() {
     const resResp = await fetch(resUrl);
     const raceResults = await resResp.json();
     
-    if (!raceResults || raceResults.length === 0) {
-      toast('Výsledky zatím nejsou dostupné', 'error');
+    if (!raceResults || !Array.isArray(raceResults) || raceResults.length === 0) {
+      toast('Výsledky zatím nejsou dostupné — zkus v pondělí po závodě', 'error');
+      console.log('API response:', raceResults);
       return;
     }
     
