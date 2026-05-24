@@ -1226,7 +1226,10 @@ function hideOverlay(){
   // Skryj/ukaz admin formular podle role
   var resForm = document.getElementById('result-form');
   if(resForm) resForm.setAttribute('data-admin', isAdmin ? '1' : '0');
-  appInit();loadResults();
+  // Nacti data po prihlaseni
+  loadStandings();
+  loadResults();
+  loadTips();
 }
 
 function loL1(s){var e=document.getElementById('lo-l1');if(e)e.style.display=s?'flex':'none';}
@@ -2052,153 +2055,120 @@ async function loadF1Results() {
   
   const btn = document.getElementById('btn-load-api');
   if (btn) { btn.textContent = '⏳ Načítám...'; btn.disabled = true; }
-  
+
+  // Helper - pauza mezi volanimi
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
   try {
     const isSprint = selResRace.sprint;
     const sessionName = isSprint ? 'Sprint' : 'Race';
     
-    // 1. Najdi session key
+    // 1. Session key
     const sessUrl = 'https://api.openf1.org/v1/sessions?year=' + apiInfo.year +
                     '&circuit_short_name=' + encodeURIComponent(apiInfo.circuit) +
                     '&session_name=' + encodeURIComponent(sessionName);
-    console.log('F1 API URL:', sessUrl);
-    console.log('selResRace:', selResRace?.id, 'apiInfo:', JSON.stringify(apiInfo));
     const sessResp = await fetch(sessUrl);
     const sessions = await sessResp.json();
-    console.log('Sessions response:', JSON.stringify(sessions));
     
     if (!sessions || !Array.isArray(sessions) || sessions.length === 0) {
-      toast('Data zatím nejsou dostupná (zkus v pondělí po závodě)', 'error');
-      return;
+      toast('Data zatím nejsou dostupná', 'error'); return;
     }
-    
     const sessionKey = sessions[0].session_key;
-    console.log('Session key:', sessionKey);
-    
-    // 2. Načti jezdce (mapování číslo -> jméno)
+    await sleep(600);
+
+    // 2. Jezdci
     const driversResp = await fetch('https://api.openf1.org/v1/drivers?session_key=' + sessionKey);
     const driversData = await driversResp.json();
-    
-    // Vytvoř mapu číslo -> jméno
     const numToName = {};
     if (Array.isArray(driversData)) {
       driversData.forEach(d => {
-        // Normalizuj jméno na náš formát (First Last)
-        const firstName = d.first_name || '';
-        const lastName = d.last_name || '';
-        const fullName = firstName + ' ' + lastName;
-        numToName[d.driver_number] = formatDriverName(fullName.trim());
+        numToName[d.driver_number] = formatDriverName((d.first_name + ' ' + d.last_name).trim());
       });
     }
-    
-    // 3. Načti výsledky závodu
+    await sleep(600);
+
+    // 3. Vysledky zavodu
     const resResp = await fetch('https://api.openf1.org/v1/session_result?session_key=' + sessionKey);
     const raceResults = await resResp.json();
     
     if (!raceResults || !Array.isArray(raceResults) || raceResults.length === 0) {
-      toast('Výsledky zatím nejsou dostupné', 'error');
-      return;
+      toast('Výsledky zatím nejsou dostupné', 'error'); return;
     }
     
-    // Seřaď podle pozice (DNF mají position=null)
     const finishers = raceResults.filter(r => r.position !== null && !r.dnf)
                                   .sort((a, b) => a.position - b.position);
     const dnfs = raceResults.filter(r => r.dnf);
     
-    // Top 5
-    const top5Names = finishers.slice(0, 5).map(r => numToName[r.driver_number] || '');
-    
     // Nastav P1-P5
-    const posIds = ['r-p1','r-p2','r-p3','r-p4','r-p5'];
-    posIds.forEach((id, i) => {
+    ['r-p1','r-p2','r-p3','r-p4','r-p5'].forEach((id, i) => {
       const el = document.getElementById(id);
-      if (el && top5Names[i]) el.value = top5Names[i];
+      if (el && finishers[i]) el.value = numToName[finishers[i].driver_number] || '';
     });
     
-    // DNF počet
+    // DNF
     const dnfEl = document.getElementById('r-dnf');
     if (dnfEl) dnfEl.value = dnfs.length;
-    
-    // 4. Fastest Lap - načti z laps API
-    try {
-      const lapsResp = await fetch('https://api.openf1.org/v1/laps?session_key=' + sessionKey + '&is_pit_out_lap=false');
-      const lapsData = await lapsResp.json();
-      if (Array.isArray(lapsData) && lapsData.length > 0) {
-        // Najdi nejrychlejší kolo
-        const validLaps = lapsData.filter(l => l.lap_duration && l.lap_duration > 0);
-        if (validLaps.length > 0) {
-          const fastest = validLaps.reduce((min, l) => l.lap_duration < min.lap_duration ? l : min);
-          const flName = numToName[fastest.driver_number] || '';
-          const flEl = document.getElementById('r-fl');
-          if (flEl && flName) flEl.value = flName;
-        }
+
+    // Nejlepsi tym - tym P1
+    if (Array.isArray(driversData) && finishers[0]) {
+      const p1Data = driversData.find(d => d.driver_number === finishers[0].driver_number);
+      if (p1Data) {
+        const teamEl = document.getElementById('r-team');
+        if (teamEl) teamEl.value = mapTeamName(p1Data.team_name || '');
       }
-    } catch(e) { console.log('FL error:', e); }
-    
-    // 5. Pole Position - z qualifying session
-    try {
-      const qualiName = isSprint ? 'Sprint Qualifying' : 'Qualifying';
-      const qualiSessResp = await fetch('https://api.openf1.org/v1/sessions?year=' + apiInfo.year +
-                                        '&circuit_short_name=' + encodeURIComponent(apiInfo.circuit) +
-                                        '&session_name=' + encodeURIComponent(qualiName));
+    }
+    await sleep(600);
+
+    // 4. Safety Car
+    const rcResp = await fetch('https://api.openf1.org/v1/race_control?session_key=' + sessionKey + '&flag=SAFETY+CAR');
+    if (rcResp.ok) {
+      const rcData = await rcResp.json();
+      if (Array.isArray(rcData) && rcData.length > 0) {
+        rSC = 'ANO';
+        document.getElementById('r-sc-yes').className = 'toggle yes';
+        document.getElementById('r-sc-no').className = 'toggle';
+      }
+    }
+    await sleep(600);
+
+    // 5. Pole position - z qualifying
+    const qualiName = isSprint ? 'Sprint Qualifying' : 'Qualifying';
+    const qualiSessResp = await fetch('https://api.openf1.org/v1/sessions?year=' + apiInfo.year +
+                                      '&circuit_short_name=' + encodeURIComponent(apiInfo.circuit) +
+                                      '&session_name=' + encodeURIComponent(qualiName));
+    if (qualiSessResp.ok) {
       const qualiSessions = await qualiSessResp.json();
       if (Array.isArray(qualiSessions) && qualiSessions.length > 0) {
+        await sleep(600);
         const qualiKey = qualiSessions[0].session_key;
         const qualiResResp = await fetch('https://api.openf1.org/v1/session_result?session_key=' + qualiKey);
-        const qualiRes = await qualiResResp.json();
-        if (Array.isArray(qualiRes) && qualiRes.length > 0) {
-          const pole = qualiRes.find(r => r.position === 1);
-          if (pole) {
-            // Nacti jezdce pro quali session
-            const qualiDriversResp = await fetch('https://api.openf1.org/v1/drivers?session_key=' + qualiKey);
-            const qualiDrivers = await qualiDriversResp.json();
-            const qualiNumToName = {};
-            if (Array.isArray(qualiDrivers)) {
-              qualiDrivers.forEach(d => {
-                qualiNumToName[d.driver_number] = formatDriverName((d.first_name + ' ' + d.last_name).trim());
-              });
+        if (qualiResResp.ok) {
+          const qualiRes = await qualiResResp.json();
+          if (Array.isArray(qualiRes)) {
+            const pole = qualiRes.find(r => r.position === 1);
+            if (pole) {
+              const poleName = numToName[pole.driver_number] || '';
+              const poleEl = document.getElementById('r-pole');
+              if (poleEl && poleName) poleEl.value = poleName;
             }
-            const poleName = qualiNumToName[pole.driver_number] || numToName[pole.driver_number] || '';
-            const poleEl = document.getElementById('r-pole');
-            if (poleEl && poleName) poleEl.value = poleName;
           }
         }
       }
-    } catch(e) { console.log('Pole error:', e); }
-    
-    // 6. Nejlepší tým - tým P1 jezdce
-    try {
-      const p1Driver = finishers[0];
-      if (p1Driver && driversData) {
-        const p1Data = driversData.find(d => d.driver_number === p1Driver.driver_number);
-        if (p1Data) {
-          const teamName = mapTeamName(p1Data.team_name || '');
-          const teamEl = document.getElementById('r-team');
-          if (teamEl && teamName) teamEl.value = teamName;
-        }
-      }
-    } catch(e) { console.log('Team error:', e); }
-    
-    // 7. Safety Car
-    try {
-      const rcResp = await fetch('https://api.openf1.org/v1/race_control?session_key=' + sessionKey);
-      const rcData = await rcResp.json();
-      if (Array.isArray(rcData)) {
-        const hasSC = rcData.some(r => r.message && 
-          (r.message.includes('SAFETY CAR') || r.message.includes('VIRTUAL SAFETY CAR')));
-        if (hasSC) {
-          rSC = 'ANO';
-          document.getElementById('r-sc-yes').className = 'toggle yes';
-          document.getElementById('r-sc-no').className = 'toggle';
-        }
-      }
-    } catch(e) { console.log('SC error:', e); }
-    
-    toast('✓ Výsledky načteny z F1 API! Zkontroluj a ulož.', 'success');
+    }
+
+    // FL vynechame - laps API je velky a throttluje
+    // Zkontroluj jestli jsou data v session_result
+    const flDriver = raceResults.find(r => r.fastest_lap || r.is_fastest_lap);
+    if (flDriver) {
+      const flEl = document.getElementById('r-fl');
+      if (flEl) flEl.value = numToName[flDriver.driver_number] || '';
+    }
+
+    toast('✓ Výsledky načteny! Zkontroluj FL a ulož.', 'success');
     
   } catch(e) {
     console.error('F1 API error:', e);
-    toast('Chyba při načítání: ' + e.message, 'error');
+    toast('Chyba: ' + e.message, 'error');
   } finally {
     if (btn) { btn.textContent = '⬇ Načíst z F1 API'; btn.disabled = false; }
   }
