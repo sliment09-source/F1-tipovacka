@@ -2120,7 +2120,7 @@ async function loadF1Results() {
     await sleep(600);
 
     // 4. Safety Car
-    const rcResp = await fetch('https://api.openf1.org/v1/race_control?session_key=' + sessionKey + '&flag=SAFETY+CAR');
+    const rcResp = await fetch('https://api.openf1.org/v1/race_control?session_key=' + sessionKey);
     if (rcResp.ok) {
       const rcData = await rcResp.json();
       if (Array.isArray(rcData) && rcData.length > 0) {
