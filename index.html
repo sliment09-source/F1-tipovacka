@@ -1393,8 +1393,22 @@ function renderStandings(data,headers){
       ?`<span class="gap-pill" style="color:var(--gold);border-color:rgba(245,196,0,.25);background:rgba(245,196,0,.06)">LEADER</span>`
       :`<span class="gap-pill ${gap<=5?'gap-close':''}">−${gap} b</span>`;
 
-    // Race pills
-    const pills=headers?headers.filter(h=>h!=='CELKEM').map(h=>{const v=p[h];if(!v||v==0)return'';return`<span class="rpill">${h}: <b>${v}</b></span>`;}).filter(Boolean).join(''):'';
+    // Race pills - sluc sprint+gp do jednoho sloupce
+    const pills=(()=>{
+      if(!headers) return '';
+      // Sluc sprint a GP body dohromady
+      const merged={};
+      headers.filter(h=>h!=='CELKEM').forEach(h=>{
+        const v=Number(p[h])||0;
+        if(!v) return;
+        // Normalizuj nazev - odeber " Sprint" suffix
+        const key=h.replace(' Sprint','').replace(' GP','').trim();
+        merged[key]=(merged[key]||0)+v;
+      });
+      return Object.entries(merged).map(([k,v])=>
+        `<span class="rpill">${k}: <b>${v}</b></span>`
+      ).join('');
+    })();
 
     return`<div class="stand-row ${rowCls}">
       ${barHtml}
