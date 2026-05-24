@@ -1255,7 +1255,7 @@ const RACES=[
   {id:'miami-gp',             name:'Miami GP',             date:'3 May 2026',   sprint:false, done:true,  deadline:'2026-05-02T20:00:00Z'},
   // NADCHÁZEJÍCÍ — všechny časy UTC správně přepočteny z lokálního času
   // Kanada: EDT = UTC-4
-  {id:'canada-sprint',        name:'Canada Sprint',        date:'24 May 2026',  sprint:true,  done:true, deadline:'2026-05-22T20:30:00Z'},
+  {id:'canada-sprint',        name:'Canada Sprint',        date:'24 May 2026',  sprint:true,  done:false, deadline:'2026-05-22T20:30:00Z'},
   {id:'canada-gp',            name:'Canada GP',            date:'24 May 2026',  sprint:false, done:false, deadline:'2026-05-23T20:00:00Z'},
   // Monaco: CEST = UTC+2, Q v 15:00 local
   {id:'monaco',               name:'Monaco',               date:'7 Jun 2026',   sprint:false, done:false, deadline:'2026-06-06T13:00:00Z'},
@@ -1423,7 +1423,7 @@ function isDone(race){
   return (new Date() - new Date(race.deadline)) > 28*3600*1000;
 }
 function buildWeekends(){const map={};RACES.forEach(r=>{if(!map[r.date])map[r.date]=[];map[r.date].push(r);});const seen=new Set(),wknds=[];RACES.forEach(r=>{if(!seen.has(r.date)){seen.add(r.date);wknds.push({date:r.date,sessions:map[r.date]});}});return wknds;}
-function renderWeekends(){const c=document.getElementById('race-group-list');if(!c)return;const wknds=buildWeekends();const nextIdx=RACES.findIndex(r=>!r.done);c.innerHTML=wknds.map(w=>{const ss=w.sessions;const allDone=ss.every(s=>isDone(s));const isNext=ss.some(s=>RACES.indexOf(s)===nextIdx);const hasSprint=ss.some(s=>s.sprint);const gp=ss.find(s=>!s.sprint)||ss[0];const nm=gp.name.replace(' GP','').replace(' Sprint','');const flag=getFlag(gp.id);let wcls='',badge='';if(allDone){wcls='is-done';badge='<div class="wknd-badge wb-done">✓ ODJETÉ</div>';}else if(isNext){wcls='is-next';badge='<div class="wknd-badge wb-next">▶ DALŠÍ</div>';}else badge='<div class="wknd-badge wb-soon">NADCHÁZEJÍCÍ</div>';const sessHtml=ss.map(s=>{const isSp=s.sprint;const hasTip=localTips.some(t=>t.raceId===s.id)||sheetTips.some(t=>t.raceId===s.id);const isAct=selRace?.id===s.id;let sCls='ss-none',sTxt='Bez tipu';if(isDone(s)){sCls='ss-done';sTxt='✓ Odjeté';}else if(hasTip){sCls='ss-tip';sTxt='✎ Tip uložen';}const locked=isLocked(s);const dlLbl=(!s.done)?deadlineLabel(s):'';const dlCls=(!s.done)?deadlineClass(s):'';
+function renderWeekends(){const c=document.getElementById('race-group-list');if(!c)return;const wknds=buildWeekends();const nextIdx=RACES.findIndex(r=>!r.done);c.innerHTML=wknds.map(w=>{const ss=w.sessions;const allDone=ss.every(s=>isDone(s));const isNext=!allDone&&ss.some(s=>RACES.indexOf(s)===nextIdx);const hasSprint=ss.some(s=>s.sprint);const gp=ss.find(s=>!s.sprint)||ss[0];const nm=gp.name.replace(' GP','').replace(' Sprint','');const flag=getFlag(gp.id);let wcls='',badge='';if(allDone){wcls='is-done';badge='<div class="wknd-badge wb-done">✓ ODJETÉ</div>';}else if(isNext){wcls='is-next';badge='<div class="wknd-badge wb-next">▶ DALŠÍ</div>';}else badge='<div class="wknd-badge wb-soon">NADCHÁZEJÍCÍ</div>';const sessHtml=ss.map(s=>{const isSp=s.sprint;const hasTip=localTips.some(t=>t.raceId===s.id)||sheetTips.some(t=>t.raceId===s.id);const isAct=selRace?.id===s.id;let sCls='ss-none',sTxt='Bez tipu';if(isDone(s)){sCls='ss-done';sTxt='✓ Odjeté';}else if(hasTip){sCls='ss-tip';sTxt='✎ Tip uložen';}const locked=isLocked(s);const dlLbl=(!s.done)?deadlineLabel(s):'';const dlCls=(!s.done)?deadlineClass(s):'';
       return`<div class="session ${isAct?'is-active':''}" onclick="selectRace('${s.id}')"><div class="sess-type ${isSp?'sprint':'race'}">${isSp?'◈ SPRINT':'◉ ZÁVOD'}</div><div class="sess-right"><div class="sess-state ${sCls}">${sTxt}</div>${(()=>{
         if(!s.deadline||isDone(s))return '';
         const _dl=new Date(s.deadline),_d=_dl-new Date();
@@ -1860,7 +1860,7 @@ function renderWeekends(){
   wknds.forEach(w=>{
     const ss=w.sessions;
     const allDone=ss.every(s=>s.done);
-    const isNext=ss.some(s=>RACES.indexOf(s)===nextIdx);
+    const isNext=!allDone&&ss.some(s=>RACES.indexOf(s)===nextIdx);
     if(allDone) doneWknds.push(w);
     else if(isNext) nextWknd.push(w);
     else futureWknds.push(w);
@@ -1871,7 +1871,7 @@ function renderWeekends(){
   function renderWknd(w, forceOpen){
     const ss=w.sessions;
     const allDone=ss.every(s=>s.done);
-    const isNext=ss.some(s=>RACES.indexOf(s)===nextIdx);
+    const isNext=!allDone&&ss.some(s=>RACES.indexOf(s)===nextIdx);
     const hasSprint=ss.some(s=>s.sprint);
     const gp=ss.find(s=>!s.sprint)||ss[0];
     const nm=gp.name.replace(' GP','').replace(' Sprint','');
