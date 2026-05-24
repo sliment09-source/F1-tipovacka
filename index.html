@@ -2099,10 +2099,22 @@ async function loadF1Results() {
                                   .sort((a, b) => a.position - b.position);
     const dnfs = raceResults.filter(r => r.dnf);
     
-    // Nastav P1-P5
+    // Nastav P1-P5 - select elementy
     ['r-p1','r-p2','r-p3','r-p4','r-p5'].forEach((id, i) => {
       const el = document.getElementById(id);
-      if (el && finishers[i]) el.value = numToName[finishers[i].driver_number] || '';
+      const name = finishers[i] ? (numToName[finishers[i].driver_number] || '') : '';
+      if (el && name) {
+        // Zkus primo nastavit hodnotu
+        el.value = name;
+        // Pokud select nema tuto option, pridej ji
+        if (el.value !== name) {
+          const opt = document.createElement('option');
+          opt.value = name; opt.textContent = name;
+          el.appendChild(opt);
+          el.value = name;
+        }
+        console.log(id, '=', el.value, '(chceme:', name + ')');
+      }
     });
     
     // DNF
