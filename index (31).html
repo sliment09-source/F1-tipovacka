@@ -1,0 +1,2255 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>F1 Tipovačka 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#e8002d;--red2:#c0001f;
+  --bg:#080808;--bg2:#101010;--bg3:#161616;--bg4:#1c1c1c;
+  --line:rgba(255,255,255,0.06);--line2:rgba(255,255,255,0.11);--line3:rgba(255,255,255,0.18);
+  --text:#f0f0f0;--text2:#c0c0c0;--muted:#5a5a5a;--muted2:#888;
+  --gold:#f5c400;--silver:#a8a8b3;--bronze:#cd7f32;
+  --green:#00e676;--green2:rgba(0,230,118,0.12);
+  --purple:#b39ddb;--purple2:rgba(179,157,219,0.12);
+  --amber:#ffab40;--amber2:rgba(255,171,64,0.12);
+  --red2dim:rgba(232,0,45,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* ═══ HEADER ═══ */
+header{position:sticky;top:0;z-index:300;background:rgba(8,8,8,0.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--line2)}
+.hdr{max-width:1300px;margin:0 auto;display:flex;align-items:center;height:56px;padding:0 24px;gap:0}
+.f1logo{
+  display:flex;align-items:center;background:var(--red);
+  padding:8px 18px 8px 14px;margin-right:22px;flex-shrink:0;
+  clip-path:polygon(0 0,100% 0,88% 100%,0 100%);
+  transition:opacity .2s;
+}
+.f1logo:hover{opacity:.85}
+.f1logo span{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;line-height:1;letter-spacing:-1px}
+.hdr-sep{width:1px;height:26px;background:var(--line2);margin-right:18px}
+.hdr-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:4px;color:var(--muted2);white-space:nowrap}
+.hdr-nav{margin-left:auto;display:flex;gap:2px;align-items:center}
+.nav-btn{background:transparent;border:none;color:var(--muted2);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:all .18s;font-family:'Inter',sans-serif;letter-spacing:.2px}
+.nav-btn:hover{color:var(--text);background:rgba(255,255,255,.06)}
+.nav-btn.active{color:#fff;background:var(--red)}
+.nav-btn.admin-btn{color:var(--amber)}
+.nav-btn.admin-btn.active{background:rgba(255,171,64,.15);color:var(--amber);border:1px solid rgba(255,171,64,.2)}
+
+main{max-width:1300px;margin:0 auto;padding:32px 24px}
+.view{display:none}.view.active{display:block;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
+
+/* ═══ PAGE HEADER ═══ */
+.pg-top{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.pg-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px;line-height:1}
+.pg-title em{color:var(--red);font-style:normal}
+.pg-sub{color:var(--muted2);font-size:12px;margin-top:5px;letter-spacing:.3px}
+
+/* ═══ SETUP BANNER ═══ */
+.setup-banner{background:rgba(255,171,64,.05);border:1px solid rgba(255,171,64,.2);border-radius:12px;padding:18px 20px;margin-bottom:24px}
+.setup-banner.hidden{display:none}
+.setup-title{font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--amber);margin-bottom:6px;text-transform:uppercase}
+.setup-desc{font-size:13px;color:var(--muted2);margin-bottom:12px}
+.setup-row{display:flex;gap:8px;flex-wrap:wrap}
+.setup-input{background:#0a0a0a;border:1px solid rgba(255,171,64,.25);color:var(--text);padding:10px 14px;border-radius:8px;font-size:13px;flex:1;min-width:220px;font-family:'Inter',sans-serif;transition:border-color .18s}
+.setup-input:focus{outline:none;border-color:var(--amber);box-shadow:0 0 0 3px rgba(255,171,64,.08)}
+.btn-setup{background:var(--amber);border:none;color:#000;padding:10px 20px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:700;letter-spacing:1px;font-family:'Inter',sans-serif;white-space:nowrap}
+.conn-status{display:flex;align-items:center;gap:7px;margin-top:10px;font-size:12px;color:var(--muted2)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot.online{background:var(--green);box-shadow:0 0 6px var(--green)}
+.dot.offline{background:var(--amber)}.dot.error{background:var(--red)}
+
+/* ═══ BUTTONS ═══ */
+.btn-ghost{background:transparent;border:1px solid var(--line2);color:var(--muted2);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:12px;font-family:'Inter',sans-serif;transition:all .18s;letter-spacing:.3px;font-weight:500}
+.btn-ghost:hover{border-color:var(--line3);color:var(--text);background:rgba(255,255,255,.04)}
+.btn-red{background:var(--red);border:none;color:#fff;padding:11px 28px;border-radius:8px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;transition:all .2s}
+.btn-red:hover{background:var(--red2);box-shadow:0 4px 20px rgba(232,0,45,.25)}
+.btn-red:disabled{opacity:.35;cursor:not-allowed}
+
+/* ═══ STANDINGS ═══ */
+.stand-wrap{background:var(--bg2);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.stand-hdr-row{display:grid;grid-template-columns:72px 1fr 110px 1fr;padding:10px 24px;background:rgba(255,255,255,.02);border-bottom:1px solid var(--line2)}
+.stand-hdr-row span{font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase}
+.stand-row{display:grid;grid-template-columns:72px 1fr 110px 1fr;align-items:center;padding:14px 24px;border-bottom:1px solid var(--line);transition:background .15s;cursor:default;position:relative}
+.stand-row:last-child{border-bottom:none}
+.stand-row:hover{background:rgba(255,255,255,.025)}
+.pos-num{font-family:'Bebas Neue',sans-serif;font-size:14px;line-height:1;display:flex;align-items:center;gap:0}
+.p1{color:var(--gold)}.p2{color:var(--silver)}.p3{color:var(--bronze)}.pN{color:var(--muted)}
+.plr-name{font-size:15px;font-weight:600;letter-spacing:.1px}
+.pts-big{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:-1px}
+.rpills{display:flex;flex-wrap:wrap;gap:5px}
+.rpill{font-size:11px;color:var(--muted2);padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+
+/* ═══ PLAYER PICK ═══ */
+.pick-section{margin-bottom:32px}
+.pick-label{font-size:11px;font-weight:600;letter-spacing:2px;color:var(--muted2);text-transform:uppercase;margin-bottom:16px}
+.pick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.pcard{
+  background:var(--bg2);border:1px solid var(--line);border-radius:14px;
+  padding:22px 16px 18px;cursor:pointer;transition:all .2s;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  position:relative;overflow:hidden;
+}
+.pcard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background .2s}
+.pcard:hover{border-color:var(--line3);background:var(--bg3);transform:translateY(-3px);box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.pcard:hover::before{background:var(--line3)}
+.pcard.selected{border-color:var(--red);background:rgba(232,0,45,.06)}
+.pcard.selected::before{background:var(--red)}
+.pcard-avatar{
+  width:56px;height:56px;border-radius:50%;
+  background:var(--bg3);border:2px solid var(--line2);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;
+  color:var(--muted2);transition:all .2s;
+}
+.pcard.selected .pcard-avatar{border-color:var(--red);color:#fff;background:rgba(232,0,45,.15)}
+.pcard:hover:not(.selected) .pcard-avatar{border-color:var(--line3);color:var(--text)}
+.pcard-name{font-size:14px;font-weight:600;letter-spacing:.2px}
+.pcard-sub{font-size:11px;color:var(--muted2)}
+.pcard-check{position:absolute;top:10px;right:10px;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;font-size:10px;display:none;align-items:center;justify-content:center;font-weight:700}
+.pcard.selected .pcard-check{display:flex}
+
+/* Active player bar */
+.player-bar{
+  display:none;align-items:center;gap:14px;
+  background:rgba(232,0,45,.06);border:1px solid rgba(232,0,45,.2);
+  border-radius:12px;padding:14px 20px;margin-bottom:24px;
+}
+.player-bar.show{display:flex;animation:fadeIn .2s ease}
+.pb-avatar{width:40px;height:40px;border-radius:50%;background:rgba(232,0,45,.15);border:1px solid rgba(232,0,45,.3);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--text);flex-shrink:0}
+.pb-info{flex:1}
+.pb-name{font-size:15px;font-weight:700;letter-spacing:.2px}
+.pb-label{font-size:11px;color:var(--muted2);margin-top:1px}
+
+/* ═══ WEEKENDS ═══ */
+.wknds{display:flex;flex-direction:column;gap:5px}
+.wknd{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--bg2);transition:all .18s}
+.wknd:hover{border-color:var(--line2)}
+.wknd.is-done{opacity:.55}.wknd.is-done:hover{opacity:1}
+.wknd.is-next{border-color:rgba(232,0,45,.4);box-shadow:0 0 0 1px rgba(232,0,45,.08)}
+.wknd-head{
+  display:flex;align-items:center;gap:12px;padding:12px 18px;
+  background:rgba(255,255,255,.02);border-bottom:1px solid var(--line);
+  cursor:pointer;user-select:none;transition:background .15s;
+}
+.wknd-head:hover{background:rgba(255,255,255,.04)}
+.wknd.is-next .wknd-head{background:rgba(232,0,45,.04)}
+.wknd-flag{font-size:20px;line-height:1;flex-shrink:0}
+.wknd-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;flex:1}
+.sprint-pill{font-size:10px;font-weight:700;letter-spacing:1.5px;padding:3px 9px;border-radius:5px;background:var(--purple2);color:var(--purple);border:1px solid rgba(179,157,219,.25)}
+.wknd-date{font-size:12px;color:var(--muted2);white-space:nowrap}
+.wknd-badge{font-size:10px;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:6px;white-space:nowrap}
+.wb-done{background:var(--green2);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+.wb-next{background:rgba(232,0,45,.12);color:#ff6b6b;border:1px solid rgba(232,0,45,.25);animation:blink 2.5s ease-in-out infinite}
+.wb-soon{background:rgba(255,255,255,.04);color:var(--muted2);border:1px solid var(--line)}
+.wknd-chevron{font-size:12px;color:var(--muted);transition:transform .2s;flex-shrink:0}
+.wknd.open .wknd-chevron{transform:rotate(180deg)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* Collapsible sessions */
+.sessions-wrap{display:none}
+.wknd.open .sessions-wrap{display:block}
+.sessions{display:flex}
+.session{flex:1;padding:12px 18px;cursor:pointer;display:flex;align-items:center;gap:10px;transition:background .14s;border-right:1px solid var(--line);position:relative}
+.session:last-child{border-right:none}
+.session:hover{background:rgba(255,255,255,.03)}
+.session.is-active{background:rgba(232,0,45,.07)}
+.sess-icon{font-size:13px;flex-shrink:0}
+.sess-type{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;flex-shrink:0}
+.sess-type.race{color:var(--muted2)}.sess-type.sprint{color:var(--purple)}
+.sess-right{margin-left:auto;text-align:right}
+.sess-state{font-size:11px;font-weight:500}
+.ss-done{color:var(--green)}.ss-tip{color:var(--amber)}.ss-none{color:var(--muted)}
+.sess-arrow{font-size:13px;color:var(--muted);margin-left:8px;transition:color .15s}
+.session:hover .sess-arrow{color:var(--red)}
+.session.is-active .sess-arrow{color:var(--red)}
+
+/* ═══ TIP FORM ═══ */
+.tip-form{margin-top:10px;background:var(--bg2);border:1px solid var(--line2);border-radius:14px;overflow:hidden;animation:slideDown .2s ease}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.form-hd{
+  background:linear-gradient(90deg,rgba(232,0,45,.08),rgba(232,0,45,.02));
+  border-bottom:1px solid var(--line);padding:18px 24px;
+  display:flex;align-items:center;gap:14px;
+}
+.form-race-nm{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px}
+.form-race-dt{color:var(--muted2);font-size:13px;margin-top:2px}
+.sprint-badge{background:var(--purple2);color:var(--purple);border:1px solid rgba(179,157,219,.3);font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 11px;border-radius:5px}
+.form-bd{padding:24px}
+
+.sec-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
+.sec-tag::after{content:'';flex:1;height:1px;background:var(--line)}
+.sec-tag.amber{color:var(--amber)}
+
+.t5grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:22px}
+.pw{position:relative}
+.plbl{position:absolute;top:-8px;left:10px;z-index:1;background:var(--red);color:#fff;font-size:9px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:4px}
+.pw .fsel{padding-top:17px;padding-bottom:10px;font-size:13px}
+
+.fsel,.finput{
+  width:100%;background:#0a0a0a;border:1px solid var(--line2);color:var(--text);
+  padding:11px 13px;border-radius:9px;font-size:14px;font-family:'Inter',sans-serif;
+  transition:border-color .18s,box-shadow .18s;appearance:none;-webkit-appearance:none;
+}
+.fsel{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='5'%3E%3Cpath fill='%23555' d='M0 0l4.5 5L9 0z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.finput{background-image:none}
+.fsel:focus,.finput:focus{outline:none;border-color:var(--red);box-shadow:0 0 0 3px rgba(232,0,45,.08)}
+.fsel option{background:#141414}
+.divider{height:1px;background:var(--line);margin:20px 0}
+.extras{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fgrp{display:flex;flex-direction:column;gap:7px}
+.flbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted2);text-transform:uppercase}
+.sc-row{display:flex;gap:6px}
+.toggle{flex:1;padding:11px;border-radius:9px;border:1px solid var(--line2);background:transparent;color:var(--muted2);cursor:pointer;font-size:13px;font-weight:600;transition:all .18s;font-family:'Inter',sans-serif}
+.toggle:hover{border-color:var(--line3);color:var(--text)}
+.toggle.yes{background:var(--green2);border-color:rgba(0,230,118,.35);color:var(--green)}
+.toggle.no{background:rgba(232,0,45,.1);border-color:rgba(232,0,45,.35);color:#ff6b6b}
+.form-acts{display:flex;align-items:center;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--line)}
+.save-status{font-size:12px;color:var(--muted2);margin-right:auto}
+.save-status.saving{color:var(--amber)}.save-status.saved{color:var(--green)}.save-status.error{color:var(--red)}
+
+/* ═══ SAVED TIPS ═══ */
+.filter-bar{display:flex;gap:8px;margin-bottom:22px;flex-wrap:wrap;align-items:center}
+.filter-lbl{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.fbtn{padding:6px 14px;border-radius:20px;border:1px solid var(--line);background:transparent;color:var(--muted2);cursor:pointer;font-size:12px;font-weight:500;font-family:'Inter',sans-serif;transition:all .16s}
+.fbtn:hover,.fbtn.active{border-color:var(--red);color:var(--text);background:rgba(232,0,45,.08)}
+.tip-card{background:var(--bg2);border:1px solid var(--line);border-radius:12px;margin-bottom:8px;overflow:hidden;transition:border-color .15s}
+.tip-card:hover{border-color:var(--line2)}
+.tc-hd{display:flex;align-items:center;gap:10px;padding:13px 20px;border-bottom:1px solid var(--line);cursor:pointer;user-select:none;transition:background .14s}
+.tc-hd:hover{background:rgba(255,255,255,.02)}
+.tc-race{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1.5px}
+.tc-plr{background:var(--red);color:#fff;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.tc-pts{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--green);letter-spacing:.5px;padding:2px 8px;background:var(--green2);border-radius:5px}
+.tc-pts.pending{font-family:'Inter',sans-serif;font-size:11px;color:var(--muted2);background:transparent;padding:0}
+.src-badge{font-size:10px;font-weight:700;letter-spacing:1px;padding:2px 8px;border-radius:5px}
+.src-sheets{background:var(--green2);color:var(--green);border:1px solid rgba(0,230,118,.2)}
+.src-local{background:var(--amber2);color:var(--amber);border:1px solid rgba(255,171,64,.2)}
+.tc-exp{font-size:12px;color:var(--muted);margin-left:auto;transition:transform .2s}
+.tc-exp.open{transform:rotate(180deg)}
+.tc-body{padding:14px 20px;display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:12px}
+.tc-body.collapsed{display:none}
+.tf-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase;margin-bottom:4px}
+.tf-val{font-size:13px;font-weight:600;color:var(--text2)}
+.tf-val.hit{color:var(--green)}.tf-val.partial{color:var(--amber)}
+
+/* ═══ LEGEND ═══ */
+.legend-box{background:var(--bg2);border:1px solid var(--line);border-radius:12px;padding:18px 22px;margin-bottom:22px}
+.legend-ttl{font-size:10px;font-weight:700;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:14px}
+.legend-items{display:flex;flex-wrap:wrap;gap:8px 22px}
+.li{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted2)}
+.lpts{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--green)}
+
+/* ═══ RESULTS GRID ═══ */
+.res-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:7px;margin-bottom:22px}
+.res-card{background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:13px 15px;cursor:pointer;transition:all .18s;position:relative;overflow:hidden}
+.res-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background .2s}
+.res-card.c-done::before{background:var(--green)}
+.res-card.c-hasres::before{background:var(--amber)}
+.res-card.c-next::before{background:var(--red);animation:pulseLine 2s infinite}
+@keyframes pulseLine{0%,100%{opacity:1}50%{opacity:.25}}
+.res-card:hover{border-color:var(--line3);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,.4)}
+.res-card.c-active{border-color:var(--red);background:rgba(232,0,45,.05)}
+.rc-name{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:1.5px;margin-bottom:3px}
+.rc-date{font-size:11px;color:var(--muted);margin-bottom:8px}
+.rc-status{font-size:10px;font-weight:700;letter-spacing:1.5px}
+.rcs-done{color:var(--green)}.rcs-sprint{color:var(--purple)}.rcs-none{color:var(--muted)}.rcs-has{color:var(--amber)}
+
+/* Result form */
+.res-form{display:none;background:var(--bg2);border:1px solid rgba(255,171,64,.3);border-radius:14px;overflow:hidden;margin-bottom:22px}
+.res-form-hd{background:linear-gradient(90deg,var(--amber2),transparent);border-bottom:1px solid var(--line);padding:18px 24px;display:flex;align-items:center;gap:14px}
+.res-form-ttl{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px;color:var(--amber)}
+.res-form-bd{padding:24px}
+
+/* Scores */
+.scores-card{display:none;background:var(--bg2);border:1px solid rgba(255,171,64,.18);border-radius:14px;overflow:hidden}
+.scores-hd{background:var(--amber2);border-bottom:1px solid var(--line);padding:14px 22px}
+.scores-ttl{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--amber)}
+.sctbl{width:100%;border-collapse:collapse}
+.sctbl th{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:10px 12px;text-align:center;border-bottom:1px solid var(--line)}
+.sctbl th:first-child{text-align:left;padding-left:20px}
+.sctbl td{padding:12px;text-align:center;border-bottom:1px solid var(--line)}
+.sctbl td:first-child{text-align:left;padding-left:20px;font-weight:600}
+.sctbl tr:last-child td{border-bottom:none}
+.pts-hi{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--green)}
+.pts-md{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--amber)}
+.pts-lo{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--muted2)}
+.pts-zr{font-family:'Bebas Neue',sans-serif;font-size:17px;color:#222}
+
+/* Toast */
+.toast{position:fixed;bottom:28px;right:28px;padding:13px 22px;border-radius:10px;font-size:13px;font-weight:600;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.success{background:var(--green);color:#000}.toast.error{background:var(--red);color:#fff}
+
+.empty{text-align:center;padding:60px 20px;color:var(--muted)}
+
+@media(max-width:700px){
+  .t5grid,.extras{grid-template-columns:repeat(2,1fr)}
+  .sessions{flex-direction:column}
+  .hdr-title,.hdr-sep{display:none}
+  .stand-hdr-row,.stand-row{grid-template-columns:54px 1fr 90px}
+  .stand-row>div:last-child,.stand-hdr-row span:last-child{display:none}
+  main{padding:20px 16px}
+}
+
+/* ═══ DRIVER / TEAM PICKER ═══ */
+.driver-picker, .team-picker {
+  position: relative;
+}
+.picker-btn {
+  width: 100%; background: #0a0a0a; border: 1px solid var(--line2);
+  border-radius: 9px; padding: 9px 12px; cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  transition: border-color .18s, box-shadow .18s;
+  font-family: 'Inter', sans-serif; color: var(--text2);
+  text-align: left; min-height: 44px;
+}
+.picker-btn:hover { border-color: var(--line3); }
+.picker-btn.open { border-color: var(--red); box-shadow: 0 0 0 3px rgba(232,0,45,.08); }
+.driver-picker.amber .picker-btn.open { border-color: var(--amber); box-shadow: 0 0 0 3px rgba(255,171,64,.08); }
+.picker-thumb {
+  width: 32px; height: 32px; border-radius: 50%; object-fit: cover;
+  background: var(--bg3); flex-shrink: 0; border: 1px solid var(--line2);
+}
+.picker-thumb.team-logo {
+  border-radius: 6px; object-fit: contain; padding: 3px;
+}
+.picker-placeholder { color: var(--muted); font-size: 13px; }
+.picker-label { font-size: 13px; font-weight: 500; flex: 1; }
+.picker-chevron { color: var(--muted); font-size: 11px; margin-left: auto; flex-shrink: 0; transition: transform .2s; }
+.picker-btn.open .picker-chevron { transform: rotate(180deg); }
+
+.picker-dropdown {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 500;
+  background: #111; border: 1px solid var(--line2); border-radius: 12px;
+  overflow: hidden; box-shadow: 0 16px 48px rgba(0,0,0,.7);
+  animation: dropIn .15s ease;
+  max-height: 360px; overflow-y: auto;
+}
+@keyframes dropIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+.picker-dropdown::-webkit-scrollbar { width: 4px; }
+.picker-dropdown::-webkit-scrollbar-track { background: transparent; }
+.picker-dropdown::-webkit-scrollbar-thumb { background: var(--line2); border-radius: 2px; }
+
+.picker-search {
+  width: 100%; background: #0d0d0d; border: none; border-bottom: 1px solid var(--line);
+  color: var(--text); padding: 10px 14px; font-size: 13px; font-family: 'Inter', sans-serif;
+  outline: none;
+}
+.picker-search::placeholder { color: var(--muted); }
+
+.picker-option {
+  display: flex; align-items: center; gap: 10px; padding: 9px 14px;
+  cursor: pointer; transition: background .12s; border-bottom: 1px solid var(--line);
+}
+.picker-option:last-child { border-bottom: none; }
+.picker-option:hover { background: rgba(255,255,255,.04); }
+.picker-option.selected { background: rgba(232,0,45,.08); }
+.picker-option-img {
+  width: 34px; height: 34px; border-radius: 50%; object-fit: cover;
+  background: var(--bg3); flex-shrink: 0; border: 1px solid var(--line);
+}
+.picker-option-img.team-logo {
+  border-radius: 6px; object-fit: contain; padding: 3px; background: #1a1a1a;
+}
+.picker-option-name { font-size: 13px; font-weight: 500; }
+.picker-option-sub { font-size: 11px; color: var(--muted2); margin-top: 1px; }
+.picker-clear { width: 100%; padding: 9px 14px; background: transparent; border: none; border-top: 1px solid var(--line); color: var(--muted2); font-size: 12px; cursor: pointer; font-family: 'Inter', sans-serif; text-align: left; transition: color .15s; }
+.picker-clear:hover { color: var(--text); }
+
+/* ═══ SECTION GROUPS (odjeté / budoucí) ═══ */
+.sec-group { margin-bottom: 6px; }
+.sec-group-hd {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 18px; background: var(--bg2);
+  border: 1px solid var(--line); border-radius: 10px;
+  cursor: pointer; user-select: none; transition: all .18s;
+}
+.sec-group-hd:hover { border-color: var(--line2); background: var(--bg3); }
+.sec-group-hd.open { border-radius: 10px 10px 0 0; border-bottom-color: transparent; }
+.sg-body.open-body { border: 1px solid var(--line); border-top: none; border-radius: 0 0 10px 10px; padding: 0 0 6px; }
+.sg-icon { font-size: 13px; flex-shrink: 0; }
+.sg-label { font-family: 'Bebas Neue', sans-serif; font-size: 15px; letter-spacing: 2px; flex: 1; }
+.sg-count { font-size: 11px; color: var(--muted); background: rgba(255,255,255,.05); padding: 2px 8px; border-radius: 10px; border: 1px solid var(--line); }
+.sg-chevron { font-size: 11px; color: var(--muted); transition: transform .2s; }
+.sec-group-hd.open .sg-chevron { transform: rotate(180deg); }
+
+/* ═══ NEXT RACE HIGHLIGHT ═══ */
+.next-race-highlight { margin-bottom: 6px; }
+.nrh-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
+  color: var(--red); text-transform: uppercase;
+  margin-bottom: 8px; display: flex; align-items: center; gap: 8px;
+}
+.nrh-label::before { content: ''; width: 20px; height: 2px; background: var(--red); border-radius: 1px; }
+.nrh-label::after { content: ''; flex: 1; height: 1px; background: rgba(232,0,45,.2); }
+.next-race-highlight .wknd { border-color: rgba(232,0,45,.4); }
+
+/* ═══ ENHANCED STANDINGS ═══ */
+.stand-row.pos-row-1 { background: linear-gradient(90deg, rgba(245,196,0,0.07) 0%, transparent 60%); }
+.stand-row.pos-row-2 { background: linear-gradient(90deg, rgba(168,168,179,0.05) 0%, transparent 60%); }
+.stand-row.pos-row-3 { background: linear-gradient(90deg, rgba(205,127,50,0.05) 0%, transparent 60%); }
+.stand-row:hover { background: rgba(255,255,255,.025) !important; }
+
+.pos-medal {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+.pos-medal.m1 { background: linear-gradient(135deg, #f5c400, #e6a800); box-shadow: 0 4px 16px rgba(245,196,0,0.35); }
+.pos-medal.m2 { background: linear-gradient(135deg, #c0c0c8, #a0a0a8); box-shadow: 0 4px 12px rgba(168,168,179,0.25); }
+.pos-medal.m3 { background: linear-gradient(135deg, #cd8c50, #b06830); box-shadow: 0 4px 12px rgba(205,127,50,0.25); }
+.pos-medal.mN { background: var(--bg3); border: 1px solid var(--line); }
+.pos-medal-num { font-family: 'Bebas Neue', sans-serif; font-size: 20px; color: rgba(0,0,0,0.7); line-height: 1; }
+.pos-medal.mN .pos-medal-num { color: var(--muted2); font-size: 18px; }
+
+.plr-info { display: flex; flex-direction: column; gap: 3px; }
+.plr-name { font-size: 15px; font-weight: 700; letter-spacing: .1px; }
+.plr-sub { font-size: 11px; color: var(--muted); }
+
+.pts-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
+.pts-big { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--red); letter-spacing: -1px; line-height: 1; }
+.pts-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+
+.stand-row-1-bar {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--gold); border-radius: 0 2px 2px 0;
+}
+.stand-row-2-bar {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--silver); border-radius: 0 2px 2px 0;
+}
+.stand-row-3-bar {
+  position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+  background: var(--bronze); border-radius: 0 2px 2px 0;
+}
+
+.gap-pill {
+  font-size: 11px; color: var(--muted2);
+  background: rgba(255,255,255,.04); border: 1px solid var(--line);
+  padding: 2px 8px; border-radius: 10px; white-space: nowrap;
+}
+.gap-pill.gap-close { color: var(--red); border-color: rgba(232,0,45,.2); background: rgba(232,0,45,.05); }
+
+
+/* ─── DEADLINE LABELS ─── */
+.sess-deadline {
+  font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
+}
+.dl-open   { color: var(--muted); background: transparent; }
+.dl-today  { color: #60a5fa; background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.2); }
+.dl-soon   { color: var(--amber); background: rgba(255,171,64,.1); border: 1px solid rgba(255,171,64,.25); animation: pulse-amber 2s ease-in-out infinite; }
+.dl-urgent { color: var(--red); background: rgba(232,0,45,.1); border: 1px solid rgba(232,0,45,.3); animation: pulse-red 1s ease-in-out infinite; }
+.dl-locked { color: var(--muted); background: rgba(255,255,255,.04); border: 1px solid var(--line); letter-spacing: 1.5px; }
+@keyframes pulse-amber { 0%,100%{opacity:1} 50%{opacity:.5} }
+@keyframes pulse-red   { 0%,100%{opacity:1} 50%{opacity:.4} }
+
+.tip-locked-overlay {
+  background: rgba(0,0,0,.5); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px; font-size: 13px; font-weight: 600; color: var(--muted2);
+  backdrop-filter: blur(2px);
+}
+.session.is-locked { opacity: .55; cursor: not-allowed; }
+.session.is-locked:hover { background: transparent; }
+.session.is-locked .sess-arrow { display: none; }
+
+.form-locked-banner {
+  background: rgba(255,255,255,.04); border: 1px solid var(--line2);
+  border-radius: 10px; padding: 16px 20px; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; color: var(--muted2);
+}
+.form-locked-icon { font-size: 20px; flex-shrink: 0; }
+
+#setup-banner{display:none!important}
+
+/* ── UZAVÍRKA ── */
+.sess-deadline{display:flex;align-items:center;gap:5px;margin-top:4px}
+.sdl-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.sdl-val{font-size:12px;font-weight:700;white-space:nowrap}
+.dl-open .sdl-lbl,.dl-open .sdl-val{color:var(--muted2)}
+.dl-today .sdl-lbl,.dl-today .sdl-val{color:#60a5fa}
+.dl-soon .sdl-lbl,.dl-soon .sdl-val{color:var(--amber)}
+.dl-soon .sdl-val{animation:pulseDl 2s ease-in-out infinite}
+.dl-urgent .sdl-lbl,.dl-urgent .sdl-val{color:var(--red);font-weight:900}
+.dl-urgent .sdl-val{animation:pulseDl .8s ease-in-out infinite}
+.dl-locked .sdl-lbl,.dl-locked .sdl-val{color:var(--muted)}
+@keyframes pulseDl{0%,100%{opacity:1}50%{opacity:.35}}
+.session.is-locked{opacity:.5;cursor:not-allowed!important}
+.session.is-locked:hover{background:transparent!important}
+.session.is-locked .sess-arrow{display:none}
+
+.picker-thumb:not(.team-logo) {
+  object-position: top center !important;
+  object-fit: cover !important;
+}
+.picker-option-img:not(.team-logo) {
+  object-position: top center !important;
+  object-fit: cover !important;
+}
+/* Dropdown option - obrázek větší aby byl vidět obličej */
+.picker-option { align-items: flex-start !important; }
+.picker-option .picker-option-img:not(.team-logo) {
+  width: 44px !important;
+  height: 44px !important;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+
+/* Oprava přetékání fotky v P1-P5 */
+.pw .picker-btn {
+  min-height: 44px;
+  overflow: hidden;
+}
+.pw .picker-thumb {
+  width: 28px !important;
+  height: 28px !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ── DRIVER PHOTO FIX ── */
+/* Wrapper kolem fotky jezdce v tlačítku */
+.picker-btn { overflow: hidden; }
+.picker-btn .picker-thumb:not(.team-logo) {
+  flex-shrink: 0;
+  overflow: hidden;
+}
+/* V dropdown listu - zarovnání nahoře kvůli 2-řádkovému jménu */
+.picker-option { align-items: center !important; }
+/* Obrázky v dropdown - pevná velikost bez přetékání */
+.picker-option .picker-option-img:not(.team-logo) {
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+}
+
+/* ══ REDESIGN — šedá paleta ══ */
+:root {
+  --bg:     #0e0e10 !important;
+  --bg2:    #161618 !important;
+  --bg3:    #1e1e21 !important;
+  --bg4:    #262629 !important;
+  --line:   rgba(255,255,255,0.08) !important;
+  --line2:  rgba(255,255,255,0.14) !important;
+  --line3:  rgba(255,255,255,0.22) !important;
+  --text:   #f2f2f2 !important;
+  --text2:  #c8c8cc !important;
+  --muted:  #72727a !important;
+  --muted2: #a0a0aa !important;
+}
+
+/* Header — jemnější sklo */
+header {
+  background: rgba(14,14,16,0.94) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.10) !important;
+  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.5) !important;
+}
+
+/* F1 logo wrapper */
+.f1logo-img {
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+  flex-shrink: 0;
+}
+
+/* Nav tlačítka — jemnější */
+.nav-btn {
+  font-weight: 500 !important;
+  letter-spacing: 0.2px !important;
+}
+.nav-btn:hover {
+  background: rgba(255,255,255,0.07) !important;
+  color: #fff !important;
+}
+.nav-btn.active {
+  background: var(--red) !important;
+  box-shadow: 0 2px 12px rgba(232,0,45,0.3) !important;
+}
+
+/* Karty — subtilní světlé bordery */
+.stand-wrap, .wknd, .tip-form, .pub-result-card,
+.legend-box, .scores-card, .res-form, .tip-card {
+  border-color: rgba(255,255,255,0.09) !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
+}
+
+/* Session karty — hover efekt */
+.session:hover {
+  background: rgba(255,255,255,0.04) !important;
+}
+.session.is-active {
+  background: rgba(232,0,45,0.08) !important;
+  border-left: 2px solid var(--red);
+}
+
+/* Weekend header */
+.wknd-head {
+  background: rgba(255,255,255,0.025) !important;
+}
+.wknd.is-next {
+  border-color: rgba(232,0,45,0.5) !important;
+  box-shadow: 0 0 0 1px rgba(232,0,45,0.12), 0 4px 20px rgba(232,0,45,0.08) !important;
+}
+.wknd.is-next .wknd-head {
+  background: rgba(232,0,45,0.06) !important;
+}
+
+/* Standings — jemný gradient pro top 3 */
+.stand-row.pos-row-1 {
+  background: linear-gradient(90deg, rgba(245,196,0,0.06) 0%, transparent 50%) !important;
+}
+.stand-row.pos-row-2 {
+  background: linear-gradient(90deg, rgba(168,168,179,0.04) 0%, transparent 50%) !important;
+}
+.stand-row.pos-row-3 {
+  background: linear-gradient(90deg, rgba(205,127,50,0.04) 0%, transparent 50%) !important;
+}
+
+/* Picker dropdown */
+.picker-dropdown {
+  background: #1a1a1d !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8) !important;
+}
+.picker-option:hover {
+  background: rgba(255,255,255,0.05) !important;
+}
+.picker-option.selected {
+  background: rgba(232,0,45,0.1) !important;
+}
+
+/* Form inputs — jemnější */
+.fsel, .finput {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.12) !important;
+  color: #f0f0f0 !important;
+}
+.fsel:focus, .finput:focus {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: var(--red) !important;
+}
+
+/* Toggle tlačítka */
+.toggle {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+.toggle:hover {
+  background: rgba(255,255,255,0.08) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+}
+
+/* Player karty */
+.pcard {
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1) !important;
+}
+.pcard:hover {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.18) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+}
+.pcard.selected {
+  background: rgba(232,0,45,0.08) !important;
+  border-color: rgba(232,0,45,0.5) !important;
+  box-shadow: 0 4px 20px rgba(232,0,45,0.15) !important;
+}
+
+/* Tlačítka uložit */
+.btn-red, .btn-pri {
+  box-shadow: 0 4px 16px rgba(232,0,45,0.3) !important;
+  letter-spacing: 1.5px !important;
+}
+.btn-red:hover, .btn-pri:hover {
+  box-shadow: 0 6px 24px rgba(232,0,45,0.45) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* Race grid karty */
+.res-card {
+  background: rgba(255,255,255,0.03) !important;
+  border-color: rgba(255,255,255,0.08) !important;
+}
+.res-card:hover {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(232,0,45,0.4) !important;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.4) !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+
+
+/* ══ ZESVĚTLENÍ & VIDITELNOST ══ */
+:root {
+  --bg:     #111114 !important;
+  --bg2:    #1a1a1e !important;
+  --bg3:    #232328 !important;
+  --bg4:    #2c2c32 !important;
+  --line:   rgba(255,255,255,0.10) !important;
+  --line2:  rgba(255,255,255,0.17) !important;
+  --line3:  rgba(255,255,255,0.26) !important;
+  --text:   #f4f4f6 !important;
+  --text2:  #d0d0d8 !important;
+  --muted:  #7a7a85 !important;
+  --muted2: #ababb8 !important;
+}
+
+/* Méně průhledný header */
+header {
+  background: rgba(17,17,20,0.96) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.12) !important;
+}
+
+/* Wknd karty světlejší */
+.wknd {
+  background: rgba(255,255,255,0.045) !important;
+  border-color: rgba(255,255,255,0.11) !important;
+}
+.wknd:hover {
+  background: rgba(255,255,255,0.07) !important;
+  border-color: rgba(255,255,255,0.20) !important;
+}
+.wknd-head {
+  background: rgba(255,255,255,0.04) !important;
+}
+.wknd.is-next {
+  background: rgba(232,0,45,0.07) !important;
+  border-color: rgba(232,0,45,0.55) !important;
+}
+
+/* Session světlejší */
+.session {
+  border-right-color: rgba(255,255,255,0.10) !important;
+}
+.session:hover {
+  background: rgba(255,255,255,0.06) !important;
+}
+
+/* Standing rows */
+.stand-wrap {
+  background: rgba(255,255,255,0.04) !important;
+}
+.stand-row:hover {
+  background: rgba(255,255,255,0.05) !important;
+}
+.stand-hdr-row {
+  background: rgba(255,255,255,0.05) !important;
+}
+
+/* Karty - viditelné pozadí */
+.tip-card {
+  background: rgba(255,255,255,0.04) !important;
+}
+.tip-card:hover {
+  background: rgba(255,255,255,0.07) !important;
+}
+.pcard {
+  background: rgba(255,255,255,0.045) !important;
+}
+.pcard:hover {
+  background: rgba(255,255,255,0.09) !important;
+}
+.legend-box, .scores-card {
+  background: rgba(255,255,255,0.04) !important;
+}
+
+/* Větší kontrast textu */
+.wknd-name, .plr-name, .pg-title, .section-title {
+  color: #f8f8fa !important;
+}
+.wknd-date, .wknd-badge.wb-soon, .sess-state.ss-none {
+  color: #b0b0bc !important;
+}
+
+/* Picker btn */
+.picker-btn {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+.picker-btn:hover {
+  background: rgba(255,255,255,0.10) !important;
+  border-color: rgba(255,255,255,0.24) !important;
+}
+
+/* Inputs */
+.fsel, .finput {
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.14) !important;
+}
+
+/* Res cards */
+.res-card {
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.10) !important;
+}
+.res-card:hover {
+  background: rgba(255,255,255,0.08) !important;
+}
+
+/* Sec groups */
+.sec-group-hd {
+  background: rgba(255,255,255,0.05) !important;
+  border-color: rgba(255,255,255,0.11) !important;
+}
+.sec-group-hd:hover {
+  background: rgba(255,255,255,0.08) !important;
+}
+
+/* Form head */
+.form-hd {
+  background: rgba(232,0,45,0.10) !important;
+}
+
+/* F1 logo SVG wrapper */
+.f1logo-img {
+  display: flex;
+  align-items: center;
+  margin-right: 18px;
+  flex-shrink: 0;
+}
+
+
+/* ══ MOBILE HEADER FIX ══ */
+@media (max-width: 600px) {
+  .hdr {
+    padding: 0 10px !important;
+    gap: 0 !important;
+    height: 50px !important;
+  }
+  .f1logo-img img {
+    height: 22px !important;
+  }
+  .hdr-title {
+    display: none !important;
+  }
+  .hdr-sep {
+    display: none !important;
+  }
+  .hdr-nav {
+    gap: 1px !important;
+  }
+  .nav-btn {
+    padding: 7px 9px !important;
+    font-size: 11px !important;
+    letter-spacing: 0 !important;
+    border-radius: 6px !important;
+  }
+  /* Skryj emoji ikony na velmi malých telefonech a nech jen text */
+  main {
+    padding: 16px 12px !important;
+  }
+}
+
+@media (max-width: 380px) {
+  .nav-btn {
+    padding: 6px 7px !important;
+    font-size: 10px !important;
+  }
+}
+
+
+#lo-overlay{position:fixed;inset:0;z-index:9999;background:#0a0a0a;display:flex;align-items:center;justify-content:center;padding:24px}
+#lo-overlay.gone{display:none}
+.lo-box{width:100%;max-width:420px;background:#111114;border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:36px 32px 32px;box-shadow:0 32px 80px rgba(0,0,0,0.8)}
+.lo-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.lo-badge{background:#e8002d;padding:8px 16px;clip-path:polygon(0 0,100% 0,88% 100%,0 100%);font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;line-height:1}
+.lo-ttl{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:4px;color:#888}
+.lo-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;margin-bottom:4px;color:#f0f0f0}
+.lo-sub{font-size:13px;color:#888;margin-bottom:18px}
+.lo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:8px}
+#lo-s2{display:none}
+.lo-back{background:none;border:none;color:#666;font-size:12px;cursor:pointer;padding:0;margin-bottom:14px}
+.lo-who{display:flex;align-items:center;gap:10px;margin-bottom:18px;padding:10px 14px;background:rgba(232,0,45,0.07);border:1px solid rgba(232,0,45,0.2);border-radius:10px}
+.lo-wh-av{width:32px;height:32px;border-radius:50%;background:rgba(232,0,45,0.2);font-family:'Bebas Neue',sans-serif;font-size:13px;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lo-wh-nm{font-size:14px;font-weight:700;color:#f0f0f0}
+.lo-wh-lb{font-size:11px;color:#666}
+.lo-mode{display:inline-flex;align-items:center;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:5px;margin-bottom:12px}
+.lo-new{background:rgba(0,230,118,0.12);color:#00e676;border:1px solid rgba(0,230,118,0.2)}
+.lo-pw{background:rgba(232,0,45,0.1);color:#ff6b6b;border:1px solid rgba(232,0,45,0.2)}
+.lo-field{margin-bottom:12px}
+.lo-lbl{font-size:10px;font-weight:700;letter-spacing:2px;color:#666;text-transform:uppercase;display:block;margin-bottom:6px}
+.lo-inp{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.14);color:#f0f0f0;padding:11px 14px;border-radius:10px;font-size:14px;font-family:'Inter',sans-serif;outline:none}
+.lo-inp:focus{border-color:#e8002d}
+.lo-btn{width:100%;background:#e8002d;border:none;color:#fff;padding:12px;border-radius:10px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;margin-top:4px}
+.lo-btn:disabled{opacity:.4}
+.lo-err{background:rgba(232,0,45,0.1);border:1px solid rgba(232,0,45,0.3);border-radius:8px;padding:8px 12px;color:#ff6b6b;font-size:13px;margin-top:10px;display:none}
+.lo-load{display:none;justify-content:center;padding:12px}
+.lo-spin{width:22px;height:22px;border:2px solid rgba(255,255,255,0.1);border-top-color:#e8002d;border-radius:50%;animation:spin .7s linear infinite}
+.user-badge{display:none;align-items:center;gap:8px;background:rgba(232,0,45,0.1);border:1px solid rgba(232,0,45,0.25);border-radius:8px;padding:5px 10px;font-size:13px;font-weight:600;color:#f0f0f0;margin-left:8px;cursor:pointer}
+.user-badge.show{display:flex}
+.user-badge-avatar{width:22px;height:22px;border-radius:50%;background:rgba(232,0,45,0.3);font-family:'Bebas Neue',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:center}
+
+
+</style>
+</head>
+<body>
+
+<div id="lo-overlay">
+  <div class="lo-box">
+    <div class="lo-logo"><div class="lo-badge">F1</div><div class="lo-ttl">TIPOVACKA 2026</div></div>
+    <div id="lo-s1">
+      <div class="lo-h">VYBER SE</div>
+      <div class="lo-sub">Klikni na sve jmeno</div>
+      <div class="lo-grid" id="lo-grid"></div>
+      <div class="lo-load" id="lo-l1"><div class="lo-spin"></div></div>
+      <div class="lo-err" id="lo-e1"></div>
+    </div>
+    <div id="lo-s2">
+      <button class="lo-back" onclick="loBack()">&#8592; Zpet</button>
+      <div class="lo-who">
+        <div class="lo-wh-av" id="lo-wh-av">?</div>
+        <div><div class="lo-wh-nm" id="lo-wh-nm"></div><div class="lo-wh-lb" id="lo-wh-lb"></div></div>
+      </div>
+      <div id="lo-cr" style="display:none">
+        <div class="lo-mode lo-new">Novy ucet</div>
+        <div class="lo-field"><label class="lo-lbl">Nove heslo</label><input class="lo-inp" type="password" id="lo-p1" placeholder="Min. 4 znaky"></div>
+        <div class="lo-field"><label class="lo-lbl">Heslo znovu</label><input class="lo-inp" type="password" id="lo-p2" placeholder="Zopakuj heslo"></div>
+        <button class="lo-btn" id="lo-bcr" onclick="loCreate()">VYTVORIT HESLO</button>
+      </div>
+      <div id="lo-li" style="display:none">
+        <div class="lo-mode lo-pw">Zadej heslo</div>
+        <div class="lo-field"><input class="lo-inp" type="password" id="lo-p" placeholder="Tvoje heslo..."></div>
+        <button class="lo-btn" id="lo-bli" onclick="loLogin()">VSTOUPIT</button>
+      </div>
+      <div class="lo-load" id="lo-l2"><div class="lo-spin"></div></div>
+      <div class="lo-err" id="lo-e2"></div>
+    </div>
+  </div>
+</div>
+
+
+<header>
+  <div class="hdr">
+    <div class="f1logo-img">
+  <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/F1.svg" 
+       alt="Formula 1" 
+       height="28" 
+       style="display:block;flex-shrink:0"
+       onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
+  <span style="display:none;font-family:'Bebas Neue',sans-serif;font-size:22px;color:#e8002d;letter-spacing:-1px">F1</span>
+</div>
+    
+    <div class="hdr-title">TIPOVAČKA 2026</div>
+    <nav class="hdr-nav">
+      <button class="nav-btn active" onclick="showView('standings',event)">🏆 Pořadí</button>
+      <button class="nav-btn" onclick="showView('tip',event)">✏ Tipovat</button>
+      <button class="nav-btn" onclick="showView('saved',event)">📋 Tipy</button>
+      <button class="nav-btn admin-btn" onclick="showViewAdmin(this)">⚑ Výsledky</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- STANDINGS -->
+<div id="view-standings" class="view active">
+  <div class="setup-banner" id="setup-banner">
+    <div class="setup-title">Nastavení Google Sheets</div>
+    <div class="setup-desc">Vlož URL své Google Apps Script webové aplikace.</div>
+    <div class="setup-row">
+      <input class="setup-input" id="script-url-input" placeholder="https://script.google.com/macros/s/.../exec">
+      <button class="btn-setup" onclick="saveScriptUrl()">ULOŽIT</button>
+    </div>
+    <div class="conn-status"><div class="dot offline" id="conn-dot"></div><span id="conn-text">Nepropojeno</span></div>
+  </div>
+  <div class="pg-top">
+    <div><div class="pg-title">CELKOVÉ <em>POŘADÍ</em></div><div class="pg-sub">Sezóna 2026</div></div>
+    <button class="btn-ghost" id="refresh-btn" onclick="loadStandings()">↻ Obnovit</button>
+  </div>
+  <div class="stand-wrap">
+    <div class="stand-hdr-row"><span>POS</span><span>HRÁČ</span><span>BODY</span><span>BODY ZA ZÁVODY</span></div>
+    <div id="standings-body"></div>
+  </div>
+</div>
+
+<!-- TIP -->
+<div id="view-tip" class="view">
+  <div class="pg-top">
+    <div><div class="pg-title">ZADAT <em>TIP</em></div><div class="pg-sub" id="tip-pg-sub">Nejdřív vyber hráče</div></div>
+  </div>
+
+  <!-- KROK 1: výběr hráče -->
+  <div id="player-pick-screen">
+    <div class="pick-section">
+      <div class="pick-label">Kdo tipuje?</div>
+      <div class="pick-grid" id="player-pick-cards"></div>
+    </div>
+  </div>
+
+  <!-- Aktivní hráč lišta -->
+  <div class="player-bar" id="active-player-bar">
+    <div class="pb-avatar" id="apb-avatar"></div>
+    <div class="pb-info"><div class="pb-name" id="apb-name"></div><div class="pb-label">Aktivní hráč</div></div>
+    <button class="btn-ghost" onclick="changePlayer()">Změnit hráče</button>
+  </div>
+
+  <!-- KROK 2: závody -->
+  <div id="races-section" style="display:none">
+    <div class="wknds" id="race-group-list"></div>
+  </div>
+
+  <!-- Formulář tipu -->
+  <div class="tip-form" id="tip-form-container" style="display:none">
+    <div class="form-hd">
+      <div><div class="form-race-nm" id="form-race-title"></div><div class="form-race-dt" id="form-race-date"></div></div>
+      <span id="form-sprint-badge" class="sprint-badge" style="display:none">◈ SPRINT</span>
+      <div style="margin-left:auto"><button class="btn-ghost" onclick="hideForm()">← Zpět</button></div>
+    </div>
+    <div id="form-lock-banner" class="form-locked-banner" style="display:none">
+      <span class="form-locked-icon">🔒</span>
+      <div><strong>Tipy jsou uzavřeny</strong><br><span style="font-size:12px;color:var(--muted)">Kvalifikace již začala — tipy nelze měnit</span></div>
+    </div>
+    <div class="form-bd">
+      <div class="sec-tag">Top 5 pořadí</div>
+      <div class="t5grid" id="top5-selects"></div>
+      <div class="divider"></div>
+      <div class="extras">
+        <div class="fgrp"><label class="flbl">Pole Position</label><div class="driver-picker" id="f-pole-picker" data-field="f-pole"></div><input type="hidden" id="f-pole"></div>
+        <div class="fgrp"><label class="flbl">Fastest Lap</label><div class="driver-picker" id="f-fl-picker" data-field="f-fl"></div><input type="hidden" id="f-fl"></div>
+        <div class="fgrp"><label class="flbl">Nejlepší tým</label><div class="team-picker" id="f-team-picker" data-field="f-team"></div><input type="hidden" id="f-team"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="extras">
+        <div class="fgrp"><label class="flbl">Počet DNF</label><input type="number" class="finput" id="f-dnf" min="0" max="20" value="0" style="width:80px"></div>
+        <div class="fgrp"><label class="flbl">Safety Car?</label><div class="sc-row"><button class="toggle" id="sc-ano" onclick="toggleSC('ANO')">ANO</button><button class="toggle" id="sc-ne" onclick="toggleSC('NE')">NE</button></div></div>
+      </div>
+      <div class="form-acts">
+        <span class="save-status" id="save-status"></span>
+        <button class="btn-ghost" onclick="clearForm()">Vymazat</button>
+        <button class="btn-red" id="save-btn" onclick="saveTip()">ULOŽIT TIP</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SAVED -->
+<div id="view-saved" class="view">
+  <div class="pg-top">
+    <div><div class="pg-title">ULOŽENÉ <em>TIPY</em></div></div>
+    <button class="btn-ghost" onclick="loadTips()">↻ Sheets</button>
+  </div>
+  <div class="filter-bar">
+    <span class="filter-lbl">Hráč:</span>
+    <button class="fbtn active" onclick="filterTips('all',this)">Všichni</button>
+    <span id="player-filter-btns"></span>
+    <button class="fbtn active" id="source-filter-btn" onclick="toggleSourceFilter(this)" style="margin-left:8px">Sheets + Lokální</button>
+  </div>
+  <div id="tips-list"></div>
+</div>
+
+<!-- VÝSLEDKY -->
+<div id="view-results" class="view">
+  <div class="pg-top">
+    <div><div class="pg-title">VÝSLEDKY <em>ZÁVODŮ</em></div><div class="pg-sub">Zadej skutečné výsledky → automatický výpočet bodů</div></div>
+  </div>
+  <div class="legend-box">
+    <div class="legend-ttl">Bodování</div>
+    <div class="legend-items">
+      <div class="li"><span class="lpts">10</span> Správná pozice TOP5</div>
+      <div class="li"><span class="lpts">4</span> Jezdec v TOP5 (špatná pozice)</div>
+      <div class="li"><span class="lpts">8</span> Pole Position</div>
+      <div class="li"><span class="lpts">6</span> Fastest Lap</div>
+      <div class="li"><span class="lpts">6</span> DNF přesně / <span class="lpts">3</span> ±1</div>
+      <div class="li"><span class="lpts">3</span> Safety Car</div>
+      <div class="li"><span class="lpts">5</span> Nejlepší tým</div>
+      <div class="li"><span class="lpts">10</span> Bonus (3+ jezdců)</div>
+      <div class="li" style="color:var(--purple)">Sprint = vše ÷ 2</div>
+    </div>
+  </div>
+  <div class="res-grid" id="result-race-grid"></div>
+  <div class="res-form" id="result-form">
+    <div class="res-form-hd">
+      <div><div class="res-form-ttl" id="result-race-title"></div><div style="color:var(--muted2);font-size:13px;margin-top:2px" id="result-race-date"></div></div>
+      <span id="result-sprint-badge" class="sprint-badge" style="display:none">◈ SPRINT</span>
+      <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+        <button class="btn-ghost" id="btn-load-api" onclick="loadF1Results()" style="border-color:rgba(255,171,64,.4);color:var(--amber)">⬇ Načíst z F1 API</button>
+        <button class="btn-ghost" onclick="hideResultForm()">← Zpět</button>
+      </div>
+    </div>
+    <div class="res-form-bd">
+      <div class="sec-tag amber">Skutečné top 5</div>
+      <div class="t5grid" id="result-top5"></div>
+      <div class="divider"></div>
+      <div class="extras">
+        <div class="fgrp"><label class="flbl">Pole Position</label><div class="driver-picker amber" id="r-pole-picker" data-field="r-pole"></div><input type="hidden" id="r-pole"></div>
+        <div class="fgrp"><label class="flbl">Fastest Lap</label><div class="driver-picker amber" id="r-fl-picker" data-field="r-fl"></div><input type="hidden" id="r-fl"></div>
+        <div class="fgrp"><label class="flbl">Nejlepší tým</label><div class="team-picker amber" id="r-team-picker" data-field="r-team"></div><input type="hidden" id="r-team"></div>
+      </div>
+      <div class="divider"></div>
+      <div class="extras">
+        <div class="fgrp"><label class="flbl">Počet DNF</label><input type="number" class="finput" id="r-dnf" min="0" max="20" value="0" style="width:80px;border-color:rgba(255,171,64,.2)"></div>
+        <div class="fgrp"><label class="flbl">Safety Car?</label><div class="sc-row"><button class="toggle" id="r-sc-yes" onclick="toggleRSC('ANO')">ANO</button><button class="toggle" id="r-sc-no" onclick="toggleRSC('NE')">NE</button></div></div>
+      </div>
+      <div class="form-acts">
+        <span id="result-save-status" class="save-status"></span>
+        <button class="btn-ghost" onclick="clearResultForm()">Vymazat</button>
+        <button style="background:var(--amber);border:none;color:#000;padding:11px 28px;border-radius:8px;cursor:pointer;font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;transition:all .2s" id="result-save-btn" onclick="saveResult()">ULOŽIT VÝSLEDKY</button>
+      </div>
+    </div>
+  </div>
+  <div class="scores-card" id="scores-card">
+    <div class="scores-hd"><div class="scores-ttl" id="scores-title"></div></div>
+    <table class="sctbl"><thead><tr><th>Hráč</th><th>TOP5</th><th>Pole</th><th>FL</th><th>DNF</th><th>SC</th><th>Tým</th><th>Bonus</th><th>Celkem</th></tr></thead><tbody id="scores-tbody"></tbody></table>
+  </div>
+</div>
+
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+var _PL=['Michal','Milan','Vláďa','Ondra','Markét'];
+var _AD=['Vláďa'];
+var loSel=null;
+var currentPlayer=null;
+
+function loInit(){
+  var urlP=new URLSearchParams(window.location.search);
+  var p=urlP.get('player')||'';
+  var found=false;
+  for(var i=0;i<_PL.length;i++){if(_PL[i]===p){found=true;break;}}
+  if(found){currentPlayer=p;selPlayer=p;hideOverlay();return;}
+  var grid=document.getElementById('lo-grid');
+  if(!grid)return;
+  grid.innerHTML='';
+  for(var i=0;i<_PL.length;i++){
+    (function(name){
+      var btn=document.createElement('button');
+      btn.style.cssText='background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.15);color:#f0f0f0;padding:14px 8px;border-radius:12px;cursor:pointer;font-size:13px;font-weight:600;display:flex;flex-direction:column;align-items:center;gap:8px;width:100%;';
+      var av=document.createElement('div');
+      av.style.cssText='width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.1);font-size:14px;display:flex;align-items:center;justify-content:center;color:#ccc;';
+      av.textContent=name.slice(0,2).toUpperCase();
+      btn.appendChild(av);
+      btn.appendChild(document.createTextNode(name));
+      btn.addEventListener('click',function(){loPick(name,btn);});
+      grid.appendChild(btn);
+    })(_PL[i]);
+  }
+}
+
+function loPick(name,btn){
+  var btns=document.getElementById('lo-grid').querySelectorAll('button');
+  for(var i=0;i<btns.length;i++){btns[i].style.background='rgba(255,255,255,0.05)';btns[i].style.borderColor='rgba(255,255,255,0.15)';btns[i].style.color='#f0f0f0';}
+  btn.style.background='rgba(232,0,45,0.15)';btn.style.borderColor='rgba(232,0,45,0.5)';btn.style.color='#fff';
+  loSel=name;loE1('');loL1(true);
+  gPost({action:'checkPassword', player: name})
+    .then(function(d){loL1(false);if(d&&d.error){loE1(d.error);return;}loStep2(name,d&&d.hasPassword);})
+    .catch(function(e){loL1(false);loE1('Chyba: '+(e.message||e));});
+}
+
+function loStep2(name,hasPw){
+  document.getElementById('lo-s1').style.display='none';
+  document.getElementById('lo-s2').style.display='block';
+  document.getElementById('lo-wh-av').textContent=name.slice(0,2).toUpperCase();
+  document.getElementById('lo-wh-nm').textContent=name;
+  if(hasPw){
+    document.getElementById('lo-wh-lb').textContent='Zadej sve heslo';
+    document.getElementById('lo-li').style.display='block';
+    document.getElementById('lo-cr').style.display='none';
+    setTimeout(function(){var el=document.getElementById('lo-p');if(el)el.focus();},80);
+  }else{
+    document.getElementById('lo-wh-lb').textContent='Vytvor si heslo';
+    document.getElementById('lo-cr').style.display='block';
+    document.getElementById('lo-li').style.display='none';
+    setTimeout(function(){var el=document.getElementById('lo-p1');if(el)el.focus();},80);
+  }
+}
+
+function loBack(){
+  document.getElementById('lo-s1').style.display='block';
+  document.getElementById('lo-s2').style.display='none';
+  document.getElementById('lo-cr').style.display='none';
+  document.getElementById('lo-li').style.display='none';
+  loE2('');
+}
+
+function loCreate(){
+  var pw1=document.getElementById('lo-p1').value.trim();
+  var pw2=document.getElementById('lo-p2').value.trim();
+  if(!pw1){loE2('Zadej heslo.');return;}
+  if(pw1.length<4){loE2('Heslo min. 4 znaky.');return;}
+  if(pw1!==pw2){loE2('Hesla se neshoduji.');return;}
+  loL2(true);loB2(true);
+  gPost({action:'createPassword', player: loSel, password: pw1})
+    .then(function(d){loL2(false);loB2(false);if(d&&d.success)loSuccess(d.player);else loE2((d&&d.error)||'Chyba.');})
+    .catch(function(e){loL2(false);loB2(false);loE2('Chyba: '+(e.message||e));});
+}
+
+function loLogin(){
+  var pw=document.getElementById('lo-p').value.trim();
+  if(!pw){loE2('Zadej heslo.');return;}
+  loL2(true);loB2(true);
+  gPost({action:'login', player: loSel, password: pw})
+    .then(function(d){loL2(false);loB2(false);if(d&&d.success)loSuccess(d.player);else{loE2((d&&d.error)||'Spatne heslo.');document.getElementById('lo-p').value='';} })
+    .catch(function(e){loL2(false);loB2(false);loE2('Chyba: '+(e.message||e));});
+}
+
+function loSuccess(player){
+  currentPlayer=player;selPlayer=player;
+  var url=new URL(window.location.href);
+  url.searchParams.set('player',player);
+  window.history.replaceState({},'',url.toString());
+  hideOverlay();
+}
+
+function loLogout(){
+  if(!confirm('Odhlasit se jako '+currentPlayer+'?'))return;
+  var url=new URL(window.location.href);
+  url.searchParams.delete('player');
+  window.location.href=url.toString();
+}
+function confirmLogout(){loLogout();}
+
+function hideOverlay(){
+  var ov=document.getElementById('lo-overlay');if(ov)ov.classList.add('gone');
+  var hdr=document.getElementById('app-header');if(hdr)hdr.style.display='';
+  var mn=document.getElementById('app-main');if(mn)mn.style.display='';
+  var badge=document.getElementById('user-badge');if(badge)badge.classList.add('show');
+  var av=document.getElementById('user-badge-avatar');if(av)av.textContent=(currentPlayer||'').slice(0,2).toUpperCase();
+  var nm=document.getElementById('user-badge-name');if(nm)nm.textContent=currentPlayer||'';
+  // Tlacitko Vysledky vidi vsichni, formular jen admin
+  var isAdmin = false;
+  for(var i=0;i<_AD.length;i++){if(_AD[i]===currentPlayer){isAdmin=true;break;}}
+  // Skryj/ukaz admin formular podle role
+  var resForm = document.getElementById('result-form');
+  if(resForm) resForm.setAttribute('data-admin', isAdmin ? '1' : '0');
+  // Nacti data po prihlaseni
+  loadStandings();
+  loadResults();
+  loadTips();
+}
+
+function loL1(s){var e=document.getElementById('lo-l1');if(e)e.style.display=s?'flex':'none';}
+function loE1(m){var e=document.getElementById('lo-e1');if(e){e.textContent=m;e.style.display=m?'block':'none';}}
+function loL2(s){var e=document.getElementById('lo-l2');if(e)e.style.display=s?'flex':'none';}
+function loE2(m){var e=document.getElementById('lo-e2');if(e){e.textContent=m;e.style.display=m?'block':'none';}}
+function loB2(s){var b1=document.getElementById('lo-bcr');if(b1)b1.disabled=s;var b2=document.getElementById('lo-bli');if(b2)b2.disabled=s;}
+
+
+
+
+const FALLBACK_URL='https://script.google.com/macros/s/AKfycbwhdo_O0jubW6MLBZHtUMutS5WZXj9_CsdoJM-mnij8iAxz5h3gapE2373vRO2XJPCB/exec';
+const PLAYERS=['Michal','Milan','Vláďa','Ondra','Markét'];
+const DRIVERS=['Max Verstappen','Isack Hadjar','Lando Norris','Oscar Piastri','George Russell','Kimi Antonelli','Charles Leclerc','Lewis Hamilton','Fernando Alonso','Lance Stroll','Pierre Gasly','Franco Colapinto','Esteban Ocon','Oliver Bearman','Liam Lawson','Arvid Lindblad','Nico Hulkenberg','Gabriel Bortoleto','Carlos Sainz','Alexander Albon','Sergio Perez','Valtteri Bottas','TBA'];
+const TEAMS=['Red Bull Racing','Ferrari','Mercedes','McLaren','Aston Martin','Alpine','Haas','Racing Bulls','Audi','Williams','Cadillac','TBA'];
+const RACES=[
+  // ODJETÉ
+  {id:'australia',            name:'Australia',            date:'8 Mar 2026',   sprint:false, done:true,  deadline:'2026-03-07T05:00:00Z'},
+  {id:'china-sprint',         name:'China Sprint',         date:'15 Mar 2026',  sprint:true,  done:true,  deadline:'2026-03-13T07:30:00Z'},
+  {id:'china-gp',             name:'China GP',             date:'15 Mar 2026',  sprint:false, done:true,  deadline:'2026-03-14T07:00:00Z'},
+  {id:'japan',                name:'Japan',                date:'29 Mar 2026',  sprint:false, done:true,  deadline:'2026-03-28T06:00:00Z'},
+  {id:'miami-sprint',         name:'Miami Sprint',         date:'3 May 2026',   sprint:true,  done:true,  deadline:'2026-05-01T20:30:00Z'},
+  {id:'miami-gp',             name:'Miami GP',             date:'3 May 2026',   sprint:false, done:true,  deadline:'2026-05-02T20:00:00Z'},
+  // NADCHÁZEJÍCÍ — všechny časy UTC správně přepočteny z lokálního času
+  // Kanada: EDT = UTC-4
+  {id:'canada-sprint',        name:'Canada Sprint',        date:'24 May 2026',  sprint:true,  done:true, deadline:'2026-05-22T20:30:00Z'},
+  {id:'canada-gp',            name:'Canada GP',            date:'24 May 2026',  sprint:false, done:true, deadline:'2026-05-23T20:00:00Z'},
+  // Monaco: CEST = UTC+2, Q v 15:00 local
+  {id:'monaco',               name:'Monaco',               date:'7 Jun 2026',   sprint:false, done:false, deadline:'2026-06-06T13:00:00Z'},
+  // Barcelona: CEST = UTC+2, Q v 15:00 local
+  {id:'spain-barcelona',      name:'Spain Barcelona',      date:'14 Jun 2026',  sprint:false, done:false, deadline:'2026-06-13T13:00:00Z'},
+  // Austria: CEST = UTC+2, Q v 15:00 local
+  {id:'austria',              name:'Austria',              date:'28 Jun 2026',  sprint:false, done:false, deadline:'2026-06-27T13:00:00Z'},
+  // GB: BST = UTC+1, SQ v 16:30, Q v 16:00
+  {id:'great-britain-sprint', name:'Great Britain Sprint', date:'5 Jul 2026',   sprint:true,  done:false, deadline:'2026-07-03T15:30:00Z'},
+  {id:'great-britain-gp',     name:'Great Britain GP',     date:'5 Jul 2026',   sprint:false, done:false, deadline:'2026-07-04T15:00:00Z'},
+  // Belgium: CEST = UTC+2, Q v 15:00 local
+  {id:'belgium',              name:'Belgium',              date:'19 Jul 2026',  sprint:false, done:false, deadline:'2026-07-18T13:00:00Z'},
+  // Hungary: CEST = UTC+2, Q v 15:00 local
+  {id:'hungary',              name:'Hungary',              date:'26 Jul 2026',  sprint:false, done:false, deadline:'2026-07-25T13:00:00Z'},
+  // Netherlands: CEST = UTC+2, SQ v 15:30, Q v 15:00
+  {id:'netherlands-sprint',   name:'Netherlands Sprint',   date:'23 Aug 2026',  sprint:true,  done:false, deadline:'2026-08-21T13:30:00Z'},
+  {id:'netherlands-gp',       name:'Netherlands GP',       date:'23 Aug 2026',  sprint:false, done:false, deadline:'2026-08-22T13:00:00Z'},
+  // Italy Monza: CEST = UTC+2, Q v 15:00 local
+  {id:'italy',                name:'Italy Monza',          date:'6 Sep 2026',   sprint:false, done:false, deadline:'2026-09-05T13:00:00Z'},
+  // Spain Madrid: CEST = UTC+2, Q v 15:00 local
+  {id:'spain-madrid',         name:'Spain Madrid',         date:'13 Sep 2026',  sprint:false, done:false, deadline:'2026-09-12T13:00:00Z'},
+  // Azerbaijan: AZT = UTC+4, Q v 17:00 local
+  {id:'azerbaijan',           name:'Azerbaijan',           date:'26 Sep 2026',  sprint:false, done:false, deadline:'2026-09-25T13:00:00Z'},
+  // Singapore: SGT = UTC+8, SQ v 21:30, Q v 22:00
+  {id:'singapore-sprint',     name:'Singapore Sprint',     date:'11 Oct 2026',  sprint:true,  done:false, deadline:'2026-10-09T13:30:00Z'},
+  {id:'singapore-gp',         name:'Singapore GP',         date:'11 Oct 2026',  sprint:false, done:false, deadline:'2026-10-10T14:00:00Z'},
+  // USA Austin: CDT = UTC-5, Q v 17:00 local
+  {id:'usa-austin',           name:'USA Austin',           date:'25 Oct 2026',  sprint:false, done:false, deadline:'2026-10-24T22:00:00Z'},
+  // Mexico: CDT = UTC-5 (na podzim CST = UTC-6), Q v 16:00 local
+  {id:'mexico',               name:'Mexico',               date:'1 Nov 2026',   sprint:false, done:false, deadline:'2026-10-31T22:00:00Z'},
+  // Brazil: BRT = UTC-3, Q v 15:00 local (po změně USA na zimní čas)
+  {id:'brazil',               name:'Brazil',               date:'8 Nov 2026',   sprint:false, done:false, deadline:'2026-11-07T18:00:00Z'},
+  // Las Vegas: PST = UTC-8, Q v 20:00 local (v noci)
+  {id:'las-vegas',            name:'Las Vegas',            date:'22 Nov 2026',  sprint:false, done:false, deadline:'2026-11-21T04:00:00Z'},
+  // Qatar: AST = UTC+3, Q v 21:00 local
+  {id:'qatar',                name:'Qatar',                date:'29 Nov 2026',  sprint:false, done:false, deadline:'2026-11-28T18:00:00Z'},
+  // Abu Dhabi: GST = UTC+4, Q v 17:00 local
+  {id:'abu-dhabi',            name:'Abu Dhabi',            date:'6 Dec 2026',   sprint:false, done:false, deadline:'2026-12-05T13:00:00Z'},
+];
+
+// ─── DEADLINE HELPERS ───
+function isLocked(race) {
+  if (!race.deadline) return race.done;
+  return new Date() >= new Date(race.deadline);
+}
+
+function deadlineLabel(race) {
+  if (!race.deadline) return '';
+  const d = new Date(race.deadline);
+  const now = new Date();
+  const diff = d - now;
+  if (diff <= 0) return 'UZAVŘENO';
+  const hours = Math.floor(diff / 3600000);
+  const mins  = Math.floor((diff % 3600000) / 60000);
+  if (diff < 60 * 60000) return `Zavírá za ${mins} min`;
+  if (diff < 24 * 3600000) return `Zavírá za ${hours}h ${mins}min`;
+  const days = Math.floor(diff / 86400000);
+  // Format local time
+  const locale = d.toLocaleString('cs-CZ', {weekday:'short', day:'numeric', month:'numeric', hour:'2-digit', minute:'2-digit'});
+  return `Kvali: ${locale}`;
+}
+
+function deadlineClass(race) {
+  if (!race.deadline) return '';
+  const diff = new Date(race.deadline) - new Date();
+  if (diff <= 0) return 'dl-locked';
+  if (diff < 60 * 60000) return 'dl-urgent';      // < 1h
+  if (diff < 3 * 3600000) return 'dl-soon';        // < 3h
+  if (diff < 24 * 3600000) return 'dl-today';      // < 24h
+  return 'dl-open';
+}
+
+// Update deadline displays every minute
+setInterval(() => {
+  document.querySelectorAll('[data-deadline-id]').forEach(el => {
+    const id = el.getAttribute('data-deadline-id');
+    const race = RACES.find(r => r.id === id);
+    if (!race) return;
+    el.textContent = deadlineLabel(race);
+    el.className = 'sess-deadline ' + deadlineClass(race);
+  });
+}, 60000);
+
+const FLAGS={australia:'🇦🇺',china:'🇨🇳',japan:'🇯🇵',miami:'🇺🇸',canada:'🇨🇦',monaco:'🇲🇨',spain:'🇪🇸',austria:'🇦🇹','great-britain':'🇬🇧',belgium:'🇧🇪',hungary:'🇭🇺',netherlands:'🇳🇱',italy:'🇮🇹',azerbaijan:'🇦🇿',singapore:'🇸🇬',usa:'🇺🇸',mexico:'🇲🇽',brazil:'🇧🇷','las-vegas':'🇺🇸',qatar:'🇶🇦','abu-dhabi':'🇦🇪'};
+function getFlag(id){for(const[k,v]of Object.entries(FLAGS)){if(id.startsWith(k))return v;}return'🏁';}
+const FB_STANDINGS=[{name:'Michal',CELKEM:225.5},{name:'Milan',CELKEM:224.5},{name:'Vláďa',CELKEM:218},{name:'Ondra',CELKEM:209.5},{name:'Markét',CELKEM:209}];
+let scriptUrl='https://script.google.com/macros/s/AKfycbwhdo_O0jubW6MLBZHtUMutS5WZXj9_CsdoJM-mnij8iAxz5h3gapE2373vRO2XJPCB/exec';
+let selRace=null,selPlayer=PLAYERS[0],scVal=null;
+let localTips=JSON.parse(localStorage.getItem('f1_tips_2026')||'[]');
+let sheetTips=[],activeFilter='all';
+let selResRace=null,rSC=null;
+let localResult=JSON.parse(localStorage.getItem('f1_results_2026')||'{}');
+function init(){
+  document.getElementById('setup-banner').classList.add('hidden');
+  if(scriptUrl)document.getElementById('script-url-input').value=scriptUrl;
+  testConn();
+  renderStandings(FB_STANDINGS);
+  loadStandings();
+  loadResults();
+  loadTips();
+  renderPlayerPickCards();
+  renderResGrid();
+  renderPlayerFilters();
+  selPlayer=null;
+}
+function saveScriptUrl(){const v=document.getElementById('script-url-input').value.trim();if(!v||!v.startsWith('https://script.google.com')){toast('Zadej platnou Apps Script URL','error');return;}scriptUrl=v;localStorage.setItem('f1_script_url',v);document.getElementById('setup-banner').classList.add('hidden');testConn();loadStandings();}
+async function testConn(){if(!scriptUrl)return;setCS('loading','Testuji...');try{const r=await gGet('standings');if(r&&r.standings)setCS('online',`Propojeno ✓ — ${r.standings.length} hráčů`);else setCS('error','Chyba');}catch(e){setCS('error','Nelze se připojit');}}
+function setCS(s,t){const d=document.getElementById('conn-dot'),x=document.getElementById('conn-text');if(!d||!x)return;d.className='dot '+(s==='online'?'online':s==='error'?'error':'offline');x.textContent=t;}
+async function gGet(action,params={}){if(!scriptUrl)throw new Error('No URL');const url=new URL(scriptUrl);url.searchParams.set('action',action);Object.entries(params).forEach(([k,v])=>url.searchParams.set(k,v));const r=await fetch(url.toString());if(!r.ok)throw new Error(`${r.status}`);return r.json();}
+async function gPost(data){if(!scriptUrl)throw new Error('No URL');const r=await fetch(scriptUrl,{method:'POST',body:JSON.stringify(data)});if(!r.ok)throw new Error(`${r.status}`);return r.json();}
+async function loadStandings(){const btn=document.getElementById('refresh-btn');if(btn){btn.textContent='↻ Načítám...';btn.disabled=true;}try{const d=await gGet('standings');if(d.standings?.length)renderStandings(d.standings,d.headers);else renderStandings(FB_STANDINGS);}catch(e){renderStandings(FB_STANDINGS);}if(btn){btn.textContent='↻ Obnovit';btn.disabled=false;}}
+function renderStandings(data,headers){
+  const s=data.slice().sort((a,b)=>(Number(b.CELKEM)||0)-(Number(a.CELKEM)||0));
+  const leader = Number(s[0]?.CELKEM)||0;
+  document.getElementById('standings-body').innerHTML=s.map((p,i)=>{
+    const pos=i+1;
+    const pts=Number(p.CELKEM)||0;
+    const gap=leader-pts;
+    
+    // Medal badge
+    const medalClass=pos===1?'m1':pos===2?'m2':pos===3?'m3':'mN';
+    const medalIcon=pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':'';
+    const medalHtml=pos<=3
+      ?`<div class="pos-medal ${medalClass}"><span style="font-size:22px">${medalIcon}</span></div>`
+      :`<div class="pos-medal mN"><span class="pos-medal-num">${pos}</span></div>`;
+
+    // Left color bar
+    const barHtml=pos<=3?`<div class="stand-row-${pos}-bar"></div>`:'';
+
+    // Row highlight class
+    const rowCls=pos<=3?`pos-row-${pos}`:'';
+
+    // Gap to leader
+    const gapHtml=pos===1
+      ?`<span class="gap-pill" style="color:var(--gold);border-color:rgba(245,196,0,.25);background:rgba(245,196,0,.06)">LEADER</span>`
+      :`<span class="gap-pill ${gap<=5?'gap-close':''}">−${gap} b</span>`;
+
+    // Race pills - sluc sprint+gp do jednoho sloupce
+    const pills=(()=>{
+      if(!headers) return '';
+      // Sluc sprint a GP body dohromady
+      const merged={};
+      headers.filter(h=>h!=='CELKEM').forEach(h=>{
+        const v=Number(p[h])||0;
+        if(!v) return;
+        // Normalizuj nazev - odeber " Sprint" suffix
+        const key=h.replace(' Sprint','').replace(' GP','').trim();
+        merged[key]=(merged[key]||0)+v;
+      });
+      return Object.entries(merged).map(([k,v])=>
+        `<span class="rpill">${k}: <b>${v}</b></span>`
+      ).join('');
+    })();
+
+    return`<div class="stand-row ${rowCls}">
+      ${barHtml}
+      <div>${medalHtml}</div>
+      <div class="plr-info">
+        <div class="plr-name">${p.name||p['Hráč']||'?'}</div>
+        <div class="plr-sub">${gapHtml}</div>
+      </div>
+      <div class="pts-wrap">
+        <div class="pts-big">${pts}</div>
+        <div class="pts-label">bodů</div>
+      </div>
+      <div class="rpills">${pills||'<span style="color:#333;font-size:12px">—</span>'}</div>
+    </div>`;
+  }).join('');
+}
+function showView(v,e){document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('view-'+v).classList.add('active');if(e&&e.target)e.target.classList.add('active');if(v==='saved'){loadTips();renderSavedTips();}if(v==='tip'){loadTips();renderPlayerPickCards();if(selPlayer)showRacesForPlayer();}}
+function renderPlayerPickCards(){const c=document.getElementById('player-pick-cards');if(!c)return;const allTips=mergeTips();c.innerHTML=PLAYERS.map(p=>{const tipCount=allTips.filter(t=>t.player===p).length;const initials=p.slice(0,2).toUpperCase();const isSelected=selPlayer===p;return`<div class="pcard ${isSelected?'selected':''}" onclick="pickPlayer('${p}')"><div class="pcard-check">✓</div><div class="pcard-avatar">${initials}</div><div class="pcard-name">${p}</div><div class="pcard-count">${tipCount} tip${tipCount===1?'':'ů'}</div></div>`;}).join('');}
+function pickPlayer(p){selPlayer=p;showRacesForPlayer();}
+function showRacesForPlayer(){if(!selPlayer)return;const bar=document.getElementById('active-player-bar');const pickScreen=document.getElementById('player-pick-screen');const racesSection=document.getElementById('races-section');const sub=document.getElementById('tip-page-sub');bar.classList.add('visible');document.getElementById('apb-avatar').textContent=selPlayer.slice(0,2).toUpperCase();document.getElementById('apb-name').textContent=selPlayer;pickScreen.style.display='none';racesSection.style.display='block';sub.textContent='Vyber závod';renderWeekends();}
+function changePlayer(){selPlayer=null;const bar=document.getElementById('active-player-bar');const pickScreen=document.getElementById('player-pick-screen');const racesSection=document.getElementById('races-section');const sub=document.getElementById('tip-page-sub');bar.classList.remove('visible');pickScreen.style.display='block';racesSection.style.display='none';document.getElementById('tip-form-container').style.display='none';sub.textContent='Nejdřív vyber hráče';selRace=null;renderPlayerPickCards();}
+function isDone(race){
+  if(race.done) return true;
+  if(!race.deadline) return false;
+  // Považuj za odjeté pokud deadline (kvali) proběhla před více než 28h (závod je hotový)
+  return (new Date() - new Date(race.deadline)) > 28*3600*1000;
+}
+function buildWeekends(){const map={};RACES.forEach(r=>{if(!map[r.date])map[r.date]=[];map[r.date].push(r);});const seen=new Set(),wknds=[];RACES.forEach(r=>{if(!seen.has(r.date)){seen.add(r.date);wknds.push({date:r.date,sessions:map[r.date]});}});return wknds;}
+function renderWeekends(){const c=document.getElementById('race-group-list');if(!c)return;const wknds=buildWeekends();const nextIdx=RACES.findIndex(r=>!isDone(r));c.innerHTML=wknds.map(w=>{const ss=w.sessions;const allDone=ss.every(s=>isDone(s));const isNext=!allDone&&ss.some(s=>RACES.indexOf(s)===nextIdx);const hasSprint=ss.some(s=>s.sprint);const gp=ss.find(s=>!s.sprint)||ss[0];const nm=gp.name.replace(' GP','').replace(' Sprint','');const flag=getFlag(gp.id);let wcls='',badge='';if(allDone){wcls='is-done';badge='<div class="wknd-badge wb-done">✓ ODJETÉ</div>';}else if(isNext){wcls='is-next';badge='<div class="wknd-badge wb-next">▶ DALŠÍ</div>';}else badge='<div class="wknd-badge wb-soon">NADCHÁZEJÍCÍ</div>';const sessHtml=ss.map(s=>{const isSp=s.sprint;const hasTip=localTips.some(t=>t.raceId===s.id)||sheetTips.some(t=>t.raceId===s.id);const isAct=selRace?.id===s.id;let sCls='ss-none',sTxt='Bez tipu';if(isDone(s)){sCls='ss-done';sTxt='✓ Odjeté';}else if(hasTip){sCls='ss-tip';sTxt='✎ Tip uložen';}const locked=isLocked(s);const dlLbl=(!s.done)?deadlineLabel(s):'';const dlCls=(!s.done)?deadlineClass(s):'';
+      return`<div class="session ${isAct?'is-active':''}" onclick="selectRace('${s.id}')"><div class="sess-type ${isSp?'sprint':'race'}">${isSp?'◈ SPRINT':'◉ ZÁVOD'}</div><div class="sess-right"><div class="sess-state ${sCls}">${sTxt}</div>${(()=>{
+        if(!s.deadline||isDone(s))return '';
+        const _dl=new Date(s.deadline),_d=_dl-new Date();
+        const _fmt=_dl.toLocaleString('cs-CZ',{weekday:'short',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});
+        let _t,_c;
+        if(_d<=0){_t='🔒 Uzavřeno';_c='dl-locked';}
+        else if(_d<3600000){_t='⏱ za '+Math.floor(_d/60000)+' min ('+_fmt+')';_c='dl-urgent';}
+        else if(_d<10800000){const hh=Math.floor(_d/3600000),mm=Math.floor((_d%3600000)/60000);_t='⏱ za '+hh+'h '+mm+'m ('+_fmt+')';_c='dl-soon';}
+        else{_t=_fmt;_c=_d<86400000?'dl-today':'dl-open';}
+        return '<div class="sess-deadline '+_c+'" data-deadline-id="'+s.id+'"><span class="sdl-lbl">Uzavírka:</span> <span class="sdl-val">'+_t+'</span></div>';
+      })()}</div><span class="sess-arrow">›</span></div>`;}).join('');return`<div class="wknd ${wcls}"><div class="wknd-head"><span class="wknd-flag">${flag}</span><span class="wknd-name">${nm.toUpperCase()}</span>${hasSprint?'<span class="sprint-pill">◈ SPRINT</span>':''}<span class="wknd-date">${w.date}</span>${badge}</div><div class="sessions">${sessHtml}</div></div>`;}).join('');}
+function selectRace(id){
+  const race=RACES.find(r=>r.id===id);
+  if(!race)return;
+  if(isDone(race)||race.deadline&&!race.done&&new Date()>=new Date(race.deadline)){
+    toast('🔒 Tipy jsou uzavřeny — kvalifikace již začala','error');return;
+  }
+  if(isLocked(race)&&!race.done){
+    toast('⏱ Tipy jsou uzavřeny — kvalifikace již začala','error');
+    return;
+  }
+  selRace=race;document.getElementById('form-race-title').textContent=selRace.name.toUpperCase();(()=>{
+    let _dateStr = selRace.date;
+    if(selRace.deadline){
+      const _dl=new Date(selRace.deadline);
+      const _fmt=_dl.toLocaleString('cs-CZ',{weekday:'short',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});
+      _dateStr += ' · Uzavírka: ' + _fmt;
+    }
+    document.getElementById('form-race-date').textContent=_dateStr;
+  })();document.getElementById('form-sprint-badge').style.display=selRace.sprint?'inline':'none';document.getElementById('tip-form-container').style.display='block';renderDriverSelects();const ex=mergeTips().find(t=>t.player===selPlayer&&t.raceId===id);if(ex)fillForm(ex);renderWeekends();document.getElementById('tip-form-container').scrollIntoView({behavior:'smooth',block:'start'});}
+// Show lock state in form header
+function updateFormLockState(){
+  const banner=document.getElementById('form-lock-banner');
+  if(!banner||!selRace)return;
+  if(isLocked(selRace)&&!selRace.done){
+    banner.style.display='flex';
+    document.getElementById('save-btn').disabled=true;
+  } else {
+    banner.style.display='none';
+    document.getElementById('save-btn').disabled=false;
+  }
+}
+function hideForm(){selRace=null;document.getElementById('tip-form-container').style.display='none';renderWeekends();window.scrollTo({top:0,behavior:'smooth'});}
+function renderPlayerTabs(){document.getElementById('player-tabs').innerHTML=PLAYERS.map(p=>`<button class="ptab ${p===selPlayer?'active':''}" onclick="selP('${p}')">${p}</button>`).join('');}
+function selP(p){selPlayer=p;renderPlayerTabs();renderDriverSelects();const ex=mergeTips().find(t=>t.player===p&&t.raceId===selRace?.id);if(ex)fillForm(ex);}
+function dOpts(){return'<option value="">— vybrat —</option>'+DRIVERS.map(d=>`<option value="${d}">${d}</option>`).join('');}
+function tOpts(){return'<option value="">— vybrat —</option>'+TEAMS.map(t=>`<option value="${t}">${t}</option>`).join('');}
+function renderDriverSelects(){document.getElementById('top5-selects').innerHTML=[1,2,3,4,5].map(p=>`<div class="pw"><span class="plbl">P${p}</span><select class="fsel" id="f-p${p}" style="padding-top:16px;padding-bottom:9px;font-size:13px">${dOpts()}</select></div>`).join('');document.getElementById('f-pole').innerHTML=dOpts();document.getElementById('f-fl').innerHTML=dOpts();document.getElementById('f-team').innerHTML=tOpts();document.getElementById('f-dnf').value=0;scVal=null;document.getElementById('sc-ano').className='toggle';document.getElementById('sc-ne').className='toggle';document.getElementById('save-status').textContent='';}
+function fillForm(t){[1,2,3,4,5].forEach(i=>{const el=document.getElementById(`f-p${i}`);if(el)el.value=t[`p${i}`]||'';});['pole','fl','team'].forEach(k=>{const el=document.getElementById(`f-${k}`);if(el)el.value=t[k]||'';});document.getElementById('f-dnf').value=t.dnf??0;scVal=t.sc||null;document.getElementById('sc-ano').className='toggle'+(scVal==='ANO'?' yes':'');document.getElementById('sc-ne').className='toggle'+(scVal==='NE'?' no':'');}
+function clearForm(){renderDriverSelects();}
+function toggleSC(v){scVal=scVal===v?null:v;document.getElementById('sc-ano').className='toggle'+(scVal==='ANO'?' yes':'');document.getElementById('sc-ne').className='toggle'+(scVal==='NE'?' no':'');}
+async function saveTip(){if(!selRace||!selPlayer)return;const tip={id:Date.now(),timestamp:new Date().toLocaleString('cs-CZ'),raceId:selRace.id,raceName:selRace.name,player:selPlayer,p1:document.getElementById('f-p1').value,p2:document.getElementById('f-p2').value,p3:document.getElementById('f-p3').value,p4:document.getElementById('f-p4').value,p5:document.getElementById('f-p5').value,pole:document.getElementById('f-pole').value,fl:document.getElementById('f-fl').value,team:document.getElementById('f-team').value,dnf:document.getElementById('f-dnf').value,sc:scVal,points:0,source:'local'};localTips=localTips.filter(t=>!(t.player===selPlayer&&t.raceId===selRace.id));localTips.push(tip);localStorage.setItem('f1_tips_2026',JSON.stringify(localTips));if(scriptUrl){const st=document.getElementById('save-status'),btn=document.getElementById('save-btn');st.className='save-status saving';st.textContent='⏳ Ukládám...';btn.disabled=true;try{const r=await gPost({action:'saveTip',tip:{...tip,source:'sheets'}});if(r.success){st.className='save-status saved';st.textContent='✓ Uloženo v Sheets';tip.source='sheets';toast(`✓ ${selPlayer} — ${selRace.name}`,'success');}else throw new Error(r.error);}catch(e){st.className='save-status error';st.textContent='⚠ Pouze lokálně';toast('Tip uložen lokálně','error');}btn.disabled=false;}else toast(`✓ ${selPlayer} — ${selRace.name} lokálně`,'success');renderWeekends();}
+async function loadTips(){
+  if(!scriptUrl)return;
+  try{
+    const d=await gGet('tips');
+    if(d.tips){
+      sheetTips=d.tips.map(t=>({...t,source:'sheets'}));
+      renderSavedTips();
+      // Pokud je otevřený formulář, přenačti tip z Sheets
+      if(selRace&&selPlayer){
+        const ex=mergeTips().find(t=>t.player===selPlayer&&t.raceId===selRace.id);
+        if(ex)fillForm(ex);
+      }
+      // Obnov seznam závodů (indikátory "Tip uložen")
+      if(document.getElementById('view-tip')?.classList.contains('active')){
+        renderWeekends();
+      }
+    }
+  }catch(e){}
+}
+function renderPlayerFilters(){const el=document.getElementById('player-filter-btns');if(el)el.innerHTML=PLAYERS.map(p=>`<button class="fbtn ${activeFilter===p?'active':''}" onclick="filterTips('${p}',this)">${p}</button>`).join('');}
+function filterTips(p,btn){activeFilter=p;document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');document.getElementById('source-filter-btn')?.classList.add('active');renderSavedTips();}
+function toggleSourceFilter(){renderSavedTips();}
+function mergeTips(){const sk=new Set(sheetTips.map(t=>`${t.player}-${t.raceId}`));return[...sheetTips,...localTips.filter(t=>!sk.has(`${t.player}-${t.raceId}`))];}
+function renderSavedTips(){renderPlayerFilters();const all=mergeTips();const filtered=activeFilter==='all'?all:all.filter(t=>t.player===activeFilter);const order=RACES.map(r=>r.id);const sorted=filtered.slice().sort((a,b)=>{const ai=order.indexOf(a.raceId),bi=order.indexOf(b.raceId);return ai!==bi?bi-ai:(a.player||'').localeCompare(b.player||'');});const c=document.getElementById('tips-list');if(!c)return;if(!sorted.length){c.innerHTML='<div class="empty"><div style="font-size:40px;margin-bottom:14px">🏁</div><p>Žádné tipy zatím.</p></div>';return;}c.innerHTML=sorted.map(tip=>{let ph='';const res=localResult[tip.raceId];const race=RACES.find(r=>r.id===tip.raceId);if(tip.total&&Number(tip.total)>0)ph=`<span class="tc-pts">${Number(tip.total)} b</span>`;else if(res){const sc=calc(tip,res,race?.sprint||false);ph=`<span class="tc-pts">${sc.total} b</span>`;}else ph=`<span class="tc-pts pending">čeká na výsledky</span>`;const fields=[{label:'P1',val:tip.p1,key:'p1'},{label:'P2',val:tip.p2,key:'p2'},{label:'P3',val:tip.p3,key:'p3'},{label:'P4',val:tip.p4,key:'p4'},{label:'P5',val:tip.p5,key:'p5'},{label:'Pole',val:tip.pole,key:'pole'},{label:'FL',val:tip.fl,key:'fl'},{label:'Tým',val:tip.team,key:'team'},{label:'DNF',val:tip.dnf,key:'dnf'},{label:'SC',val:tip.sc,key:'sc'}].filter(f=>f.key==='dnf'?(f.val!==''&&f.val!=='nan'):(f.val&&f.val!==''&&f.val!=='0'&&f.val!=='nan'));const fh=fields.map(f=>{let cls='';if(res){const aT=[res.p1,res.p2,res.p3,res.p4,res.p5];if(['p1','p2','p3','p4','p5'].includes(f.key)){const ti=['p1','p2','p3','p4','p5'].indexOf(f.key);const ai=aT.indexOf(f.val);if(ai===ti)cls='hit';else if(ai>=0)cls='partial';}else if(f.key==='pole'&&f.val===res.pole)cls='hit';else if(f.key==='fl'&&f.val===res.fl)cls='hit';else if(f.key==='team'&&f.val===res.team)cls='hit';else if(f.key==='sc'&&f.val===res.sc)cls='hit';else if(f.key==='dnf'){const d=Math.abs(parseInt(f.val||0)-parseInt(res.dnf||0));if(d===0)cls='hit';else if(d===1)cls='partial';}}return`<div><div class="tf-lbl">${f.label}</div><div class="tf-val ${cls}">${f.val}</div></div>`;}).join('');const tid=tip.id||(tip.raceId+'-'+tip.player);const sb=`<span class="src-badge ${tip.source?.includes('sheets')?'src-sheets':'src-local'}">${tip.source?.includes('sheets')?'SHEETS':'LOKÁLNÍ'}</span>`;return`<div class="tip-card"><div class="tc-hd" onclick="toggleCard('${tid}')"><span class="tc-race">${(tip.raceName||tip.raceId||'').replace(' GP','').replace(' Sprint',' S').toUpperCase()}</span><span class="tc-plr">${tip.player}</span>${sb}${ph}<span class="tc-exp" id="exp-${tid}">▼</span></div><div class="tc-body" id="tbody-${tid}">${fh}</div></div>`;}).join('');}
+function toggleCard(id){const b=document.getElementById(`tbody-${id}`);const i=document.getElementById(`exp-${id}`);if(b)b.classList.toggle('collapsed');if(i)i.textContent=b?.classList.contains('collapsed')?'▶':'▼';}
+function calc(tip,result,isSprint){const m=isSprint?.5:1;const aT=[result.p1,result.p2,result.p3,result.p4,result.p5];const tT=[tip.p1,tip.p2,tip.p3,tip.p4,tip.p5];let top5=0,hits=0;tT.forEach((d,i)=>{if(!d)return;const ai=aT.indexOf(d);if(ai===i){top5+=10*m;hits++;}else if(ai>=0){top5+=4*m;hits++;}});const pole=tip.pole&&tip.pole===result.pole?8*m:0;const fl=tip.fl&&tip.fl===result.fl?6*m:0;const dd=Math.abs(parseInt(tip.dnf||0)-parseInt(result.dnf||0));const dnf=dd===0?6*m:dd===1?3*m:0;const sc=tip.sc&&tip.sc===result.sc?3*m:0;const team=tip.team&&tip.team===result.team?5*m:0;const bonus=hits>=3?10*m:0;return{top5,pole,fl,dnf,sc,team,bonus,total:top5+pole+fl+dnf+sc+team+bonus};}
+function rVal(id){const el=document.getElementById(id);return el?el.value:'';}
+function toggleRSC(v){rSC=rSC===v?null:v;document.getElementById('r-sc-yes').className='toggle'+(rSC==='ANO'?' yes':'');document.getElementById('r-sc-no').className='toggle'+(rSC==='NE'?' no':'');}
+function renderResGrid(){const g=document.getElementById('result-race-grid');if(!g)return;const ni=RACES.findIndex(r=>!r.done);g.innerHTML=RACES.map((race,i)=>{const has=!!localResult[race.id];let cls='rcs-none',txt='○ VYBRAT';if(has){cls='rcs-has';txt='✓ VÝSLEDKY';}else if(race.sprint){cls='rcs-sprint';txt='◈ SPRINT';}else if(race.done){cls='rcs-done';txt='✓ ODJETÉ';}let cc=race.done?'c-done':'';if(has)cc='c-hasres';if(!race.done&&i===ni)cc='c-next';return`<div class="res-card ${cc} ${selResRace?.id===race.id?'c-active':''}" onclick="selResRace2('${race.id}')"><div class="rc-name">${race.name.toUpperCase()}</div><div class="rc-date">${race.date}</div><div class="rc-status ${cls}">${txt}</div></div>`;}).join('');}
+function selResRace2(id){selResRace=RACES.find(r=>r.id===id);if(!selResRace)return;document.getElementById('result-race-title').textContent=selResRace.name.toUpperCase();document.getElementById('result-race-date').textContent=selResRace.date;document.getElementById('result-sprint-badge').style.display=selResRace.sprint?'inline':'none';document.getElementById('result-form').style.display='block';resetResForm();const ex=localResult[id];if(ex)fillResForm(ex);showScores(id);renderResGrid();document.getElementById('result-form').scrollIntoView({behavior:'smooth',block:'start'});}
+function hideResultForm(){selResRace=null;document.getElementById('result-form').style.display='none';document.getElementById('scores-card').style.display='none';renderResGrid();}
+function resetResForm(){document.getElementById('result-top5').innerHTML=[1,2,3,4,5].map(p=>`<div class="pw"><span class="plbl" style="background:var(--amber)">P${p}</span><select class="fsel" id="r-p${p}" style="border-color:rgba(255,152,0,.25);padding-top:16px;padding-bottom:9px;font-size:13px">${dOpts()}</select></div>`).join('');document.getElementById('r-pole').innerHTML=dOpts();document.getElementById('r-fl').innerHTML=dOpts();document.getElementById('r-team').innerHTML=tOpts();document.getElementById('r-dnf').value=0;rSC=null;document.getElementById('r-sc-yes').className='toggle';document.getElementById('r-sc-no').className='toggle';document.getElementById('result-save-status').textContent='';}
+function fillResForm(res){[1,2,3,4,5].forEach(i=>{const el=document.getElementById(`r-p${i}`);if(el)el.value=res[`p${i}`]||'';});['pole','fl','team'].forEach(k=>{const el=document.getElementById(`r-${k}`);if(el)el.value=res[k]||'';});document.getElementById('r-dnf').value=res.dnf||0;rSC=res.sc||null;document.getElementById('r-sc-yes').className='toggle'+(rSC==='ANO'?' yes':'');document.getElementById('r-sc-no').className='toggle'+(rSC==='NE'?' no':'');}
+function clearResultForm(){resetResForm();}
+async function saveResult(){if(!selResRace)return;const result={raceId:selResRace.id,raceName:selResRace.name,p1:rVal('r-p1'),p2:rVal('r-p2'),p3:rVal('r-p3'),p4:rVal('r-p4'),p5:rVal('r-p5'),pole:rVal('r-pole'),fl:rVal('r-fl'),team:rVal('r-team'),dnf:rVal('r-dnf'),sc:rSC};localResult[selResRace.id]=result;localStorage.setItem('f1_results_2026',JSON.stringify(localResult));const allTips=mergeTips().filter(t=>t.raceId===selResRace.id);const scoredTips=allTips.map(tip=>({...tip,...calc(tip,result,selResRace.sprint)}));const st=document.getElementById('result-save-status'),btn=document.getElementById('result-save-btn');st.style.color='var(--amber)';st.textContent='⏳ Ukládám...';btn.disabled=true;try{const r=await gPost({action:'saveResult',result,scoredTips});if(r.success){st.style.color='var(--green)';st.textContent='✓ Uloženo';toast('✓ Výsledky uloženy!','success');}else throw new Error(r.error);}catch(e){st.style.color='var(--red)';st.textContent='⚠ Pouze lokálně';toast('Uloženo lokálně','error');}btn.disabled=false;renderResGrid();showScores(selResRace.id);}
+function showScores(raceId){const result=localResult[raceId];const race=RACES.find(r=>r.id===raceId);const card=document.getElementById('scores-card');if(!result){card.style.display='none';return;}card.style.display='block';document.getElementById('scores-title').textContent=`VÝSLEDKY — ${(race?.name||raceId).toUpperCase()}`;const allTips=mergeTips().filter(t=>t.raceId===raceId);const rows=PLAYERS.map(player=>{const tip=allTips.find(t=>t.player===player);if(!tip)return{player,scored:null};return{player,scored:calc(tip,result,race?.sprint||false)};}).sort((a,b)=>(b.scored?.total||0)-(a.scored?.total||0));const pCell=v=>{const cls=v>=8?'pts-hi':v>=4?'pts-md':v>0?'pts-lo':'pts-zr';return`<td><span class="${cls}">${v>0?v:'—'}</span></td>`;};document.getElementById('scores-tbody').innerHTML=rows.map(({player,scored})=>{if(!scored)return`<tr><td>${player}</td><td colspan="8" style="color:#333;text-align:center;font-size:12px">Žádný tip</td></tr>`;const tc=scored.total>=40?'pts-hi':scored.total>=20?'pts-md':'pts-lo';return`<tr><td>${player}</td>${pCell(scored.top5)}${pCell(scored.pole)}${pCell(scored.fl)}${pCell(scored.dnf)}${pCell(scored.sc)}${pCell(scored.team)}${pCell(scored.bonus)}<td><span class="${tc}" style="font-size:18px">${scored.total}</span></td></tr>`;}).join('');}
+async function loadResults(){try{const d=await gGet('results');if(d.results){Object.assign(localResult,d.results);localStorage.setItem('f1_results_2026',JSON.stringify(localResult));}}catch(e){}}
+function showViewAdmin(btn){document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('view-results').classList.add('active');btn.classList.add('active');renderResGrid();}
+function toast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+
+// ═══════════════════════════════════════════════════
+// DRIVER & TEAM PHOTO PICKER
+// ═══════════════════════════════════════════════════
+
+// Driver photos from F1 official CDN / ergast media
+const DRIVER_INFO = {
+  'Max Verstappen':    { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/redbullracing/maxver01/2026redbullracingmaxver01right.webp',           team: 'Red Bull Racing' },
+  'Isack Hadjar':      { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/redbullracing/isahad01/2026redbullracingisahad01right.webp',           team: 'Red Bull Racing' },
+  'Lando Norris':      { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/mclaren/lannor01/2026mclarenlannor01right.webp',           team: 'McLaren' },
+  'Oscar Piastri':     { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/mclaren/oscpia01/2026mclarenoscpia01right.webp',           team: 'McLaren' },
+  'George Russell':    { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/mercedes/georus01/2026mercedesgeorus01right.webp',         team: 'Mercedes' },
+  'Kimi Antonelli':    { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/mercedes/andant01/2026mercedesandant01right.webp',         team: 'Mercedes' },
+  'Charles Leclerc':   { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/ferrari/chalec01/2026ferrarichalec01right.webp',           team: 'Ferrari' },
+  'Lewis Hamilton':    { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/ferrari/lewham01/2026ferrarilewham01right.webp',           team: 'Ferrari' },
+  'Fernando Alonso':   { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/astonmartin/feralo01/2026astonmartinferalo01right.webp',  team: 'Aston Martin' },
+  'Lance Stroll':      { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/astonmartin/lanstr01/2026astonmartinlanstr01right.webp',  team: 'Aston Martin' },
+  'Pierre Gasly':      { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/alpine/piegas01/2026alpinepiegas01right.webp',             team: 'Alpine' },
+  'Franco Colapinto':  { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/alpine/fracol01/2026alpinefracol01right.webp',             team: 'Alpine' },
+  'Esteban Ocon':      { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/haasf1team/estoco01/2026haasf1teamestoco01right.webp',    team: 'Haas' },
+  'Oliver Bearman':    { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/haasf1team/olibea01/2026haasf1teamolibea01right.webp',    team: 'Haas' },
+  'Liam Lawson':       { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/racingbulls/lialaw01/2026racingbullslialaw01right.webp',  team: 'Racing Bulls' },
+  'Arvid Lindblad':    { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/racingbulls/arvlin01/2026racingbullsarvlin01right.webp',  team: 'Racing Bulls' },
+  'Nico Hulkenberg':   { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/audi/nichul01/2026audinichul01right.webp',                 team: 'Audi' },
+  'Gabriel Bortoleto': { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/audi/gabbor01/2026audigabbor01right.webp',                team: 'Audi' },
+  'Carlos Sainz':      { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/williams/carsai01/2026williamscarsai01right.webp',         team: 'Williams' },
+  'Alexander Albon':   { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/williams/alealb01/2026williamsalealb01right.webp',         team: 'Williams' },
+  'Sergio Perez':      { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/cadillac/serper01/2026cadillacserper01right.webp',         team: 'Cadillac' },
+  'Valtteri Bottas':   { img: 'https://media.formula1.com/image/upload/c_lfill,w_320/q_auto/d_common:f1:2026:fallback:driver:2026fallbackdriverright.webp/v1740000001/common/f1/2026/cadillac/valbot01/2026cadillacvalbot01right.webp',         team: 'Cadillac' },
+  'TBA':               { img: null, team: '?' },
+};
+
+const TEAM_INFO = {
+  'Red Bull Racing': { color: '#3671C6', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/red-bull-racing-logo.png' },
+  'Ferrari':         { color: '#E8002D', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/ferrari-logo.png' },
+  'Mercedes':        { color: '#27F4D2', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/mercedes-logo.png' },
+  'McLaren':         { color: '#FF8000', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/mclaren-logo.png' },
+  'Aston Martin':    { color: '#229971', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/aston-martin-logo.png' },
+  'Alpine':          { color: '#FF87BC', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/alpine-logo.png' },
+  'Haas':            { color: '#B6BABD', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/haas-logo.png' },
+  'Racing Bulls':    { color: '#6692FF', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/rb-logo.png' },
+  'Audi':            { color: '#C00C18', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/kick-sauber-logo.png' },
+  'Williams':        { color: '#64C4FF', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/williams-logo.png' },
+  'Cadillac':        { color: '#FFFFFF', logo: 'https://www.formula1.com/content/dam/fom-website/teams/2024/haas-logo.png' },
+  'TBA':             { color: '#555', logo: null },
+};
+
+// Fallback avatar when image fails
+function driverFallbackImg() {
+  return `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23222'/%3E%3Ccircle cx='20' cy='16' r='7' fill='%23444'/%3E%3Cellipse cx='20' cy='38' rx='13' ry='10' fill='%23444'/%3E%3C/svg%3E`;
+}
+
+let openPickerId = null;
+
+function createDriverPicker(containerId, fieldId, isAmber) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = renderPickerBtn(fieldId, null, isAmber) + '<div class="picker-dropdown" style="display:none" id="drop-' + containerId + '"></div>';
+  buildDriverDropdown('drop-' + containerId, fieldId, isAmber);
+}
+
+function createTeamPicker(containerId, fieldId, isAmber) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = renderTeamPickerBtn(fieldId, null, isAmber) + '<div class="picker-dropdown" style="display:none" id="drop-' + containerId + '"></div>';
+  buildTeamDropdown('drop-' + containerId, fieldId, isAmber);
+}
+
+function renderPickerBtn(fieldId, val, isAmber) {
+  const info = val ? DRIVER_INFO[val] : null;
+  const accent = isAmber ? 'var(--amber)' : 'var(--red)';
+  const imgHtml = info && info.img
+    ? `<img class="picker-thumb" src="${info.img}" onerror="this.src='${driverFallbackImg()}'" alt="" style="flex-shrink:0;overflow:hidden">`
+    : `<div class="picker-thumb" style="display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">👤</div>`;
+  const label = val ? `<span class="picker-label">${val}</span>` : `<span class="picker-placeholder">— vybrat jezdce —</span>`;
+  return `<button class="picker-btn" onclick="togglePicker('${fieldId}', false)" type="button">${val ? imgHtml : imgHtml}${label}<span class="picker-chevron">▼</span></button>`;
+}
+
+function renderTeamPickerBtn(fieldId, val, isAmber) {
+  const info = val ? TEAM_INFO[val] : null;
+  const imgHtml = info && info.logo
+    ? `<img class="picker-thumb team-logo" src="${info.logo}" onerror="this.style.display='none'" alt="">`
+    : `<div class="picker-thumb" style="display:flex;align-items:center;justify-content:center;font-size:18px">🏎</div>`;
+  const label = val ? `<span class="picker-label">${val}</span>` : `<span class="picker-placeholder">— vybrat tým —</span>`;
+  const dot = info ? `<div style="width:8px;height:8px;border-radius:50%;background:${info.color};flex-shrink:0"></div>` : '';
+  return `<button class="picker-btn" onclick="togglePicker('${fieldId}', true)" type="button">${imgHtml}${dot}${label}<span class="picker-chevron">▼</span></button>`;
+}
+
+function buildDriverDropdown(dropId, fieldId, isAmber) {
+  const drop = document.getElementById(dropId);
+  if (!drop) return;
+  const searchId = 'search-' + dropId;
+  drop.innerHTML = `<input class="picker-search" id="${searchId}" placeholder="Hledat jezdce..." oninput="filterDriverDrop('${dropId}','${fieldId}',${isAmber},this.value)" onclick="event.stopPropagation()">
+  <div id="opts-${dropId}">${buildDriverOpts(fieldId, isAmber, '')}</div>
+  <button class="picker-clear" onclick="selectDriver('${fieldId}',null,${isAmber})">✕ Vymazat výběr</button>`;
+}
+
+function buildDriverOpts(fieldId, isAmber, filter) {
+  const cur = document.getElementById(fieldId)?.value || '';
+  return DRIVERS.filter(d => d !== 'TBA' && d.toLowerCase().includes(filter.toLowerCase())).concat(['TBA']).map(d => {
+    const info = DRIVER_INFO[d] || {};
+    const team = info.team || '';
+    const imgSrc = info.img || driverFallbackImg();
+    const sel = cur === d ? 'selected' : '';
+    return `<div class="picker-option ${sel}" onclick="selectDriver('${fieldId}','${d}',${isAmber})">
+      <img class="picker-option-img" src="${imgSrc}" onerror="this.src='${driverFallbackImg()}'" alt="">
+      <div><div class="picker-option-name">${d}</div><div class="picker-option-sub">${team}</div></div>
+    </div>`;
+  }).join('');
+}
+
+function buildTeamDropdown(dropId, fieldId, isAmber) {
+  const drop = document.getElementById(dropId);
+  if (!drop) return;
+  drop.innerHTML = TEAMS.filter(t => t !== 'TBA').concat(['TBA']).map(t => {
+    const info = TEAM_INFO[t] || {};
+    const cur = document.getElementById(fieldId)?.value || '';
+    const sel = cur === t ? 'selected' : '';
+    const dot = `<div style="width:10px;height:10px;border-radius:50%;background:${info.color||'#555'};flex-shrink:0"></div>`;
+    const logoHtml = info.logo ? `<img class="picker-option-img team-logo" src="${info.logo}" onerror="this.style.display='none'" alt="">` : `<div class="picker-option-img" style="display:flex;align-items:center;justify-content:center;font-size:20px">🏎</div>`;
+    return `<div class="picker-option ${sel}" onclick="selectTeam('${fieldId}','${t}',${isAmber})">
+      ${logoHtml}${dot}
+      <div class="picker-option-name">${t}</div>
+    </div>`;
+  }).join('') + `<button class="picker-clear" onclick="selectTeam('${fieldId}',null,${isAmber})">✕ Vymazat výběr</button>`;
+}
+
+function filterDriverDrop(dropId, fieldId, isAmber, val) {
+  const opts = document.getElementById('opts-' + dropId);
+  if (opts) opts.innerHTML = buildDriverOpts(fieldId, isAmber, val);
+}
+
+function togglePicker(fieldId, isTeam) {
+  // Find the container and dropdown
+  const allDrops = document.querySelectorAll('.picker-dropdown');
+  const allBtns = document.querySelectorAll('.picker-btn');
+
+  // Find which picker owns this fieldId
+  const pickerId = isTeam ? fieldId.replace('f-', 'f-') + '-picker' : fieldId + '-picker';
+  // Look for container by data-field
+  const container = document.querySelector(`[data-field="${fieldId}"]`);
+  if (!container) return;
+  const drop = container.querySelector('.picker-dropdown');
+  const btn = container.querySelector('.picker-btn');
+  if (!drop || !btn) return;
+
+  const isOpen = drop.style.display !== 'none';
+
+  // Close all
+  allDrops.forEach(d => d.style.display = 'none');
+  allBtns.forEach(b => b.classList.remove('open'));
+
+  if (!isOpen) {
+    drop.style.display = 'block';
+    btn.classList.add('open');
+    // Focus search if driver picker
+    const search = drop.querySelector('.picker-search');
+    if (search) setTimeout(() => search.focus(), 50);
+    openPickerId = fieldId;
+  } else {
+    openPickerId = null;
+  }
+}
+
+function selectDriver(fieldId, val, isAmber) {
+  const hidden = document.getElementById(fieldId);
+  if (hidden) hidden.value = val || '';
+  // Update btn
+  const container = document.querySelector(`[data-field="${fieldId}"]`);
+  if (!container) return;
+  const btn = container.querySelector('.picker-btn');
+  if (btn) btn.outerHTML = renderPickerBtn(fieldId, val, isAmber);
+  // Re-attach onclick
+  const newBtn = container.querySelector('.picker-btn');
+  if (newBtn) newBtn.onclick = () => togglePicker(fieldId, false);
+  // Close dropdown
+  const drop = container.querySelector('.picker-dropdown');
+  if (drop) drop.style.display = 'none';
+  openPickerId = null;
+}
+
+function selectTeam(fieldId, val, isAmber) {
+  const hidden = document.getElementById(fieldId);
+  if (hidden) hidden.value = val || '';
+  const container = document.querySelector(`[data-field="${fieldId}"]`);
+  if (!container) return;
+  const btn = container.querySelector('.picker-btn');
+  if (btn) btn.outerHTML = renderTeamPickerBtn(fieldId, val, isAmber);
+  const newBtn = container.querySelector('.picker-btn');
+  if (newBtn) newBtn.onclick = () => togglePicker(fieldId, true);
+  const drop = container.querySelector('.picker-dropdown');
+  if (drop) drop.style.display = 'none';
+  openPickerId = null;
+}
+
+// Close pickers on outside click
+document.addEventListener('click', e => {
+  if (!e.target.closest('.driver-picker') && !e.target.closest('.team-picker')) {
+    document.querySelectorAll('.picker-dropdown').forEach(d => d.style.display = 'none');
+    document.querySelectorAll('.picker-btn').forEach(b => b.classList.remove('open'));
+    openPickerId = null;
+  }
+});
+
+// ─── Override renderDriverSelects to use pickers ───
+const _origRenderDriverSelects = renderDriverSelects;
+function renderDriverSelects() {
+  // Render the top5 grid with driver pickers
+  document.getElementById('top5-selects').innerHTML = [1,2,3,4,5].map(p =>
+    `<div class="pw">
+      <span class="plbl">P${p}</span>
+      <div class="driver-picker" data-field="f-p${p}" style="padding-top:8px">
+        <input type="hidden" id="f-p${p}">
+      </div>
+    </div>`
+  ).join('');
+  // Init each top5 picker
+  [1,2,3,4,5].forEach(p => {
+    const container = document.querySelector(`[data-field="f-p${p}"]`);
+    if (!container) return;
+    container.innerHTML = `<input type="hidden" id="f-p${p}">` + renderPickerBtn(`f-p${p}`, null, false) + `<div class="picker-dropdown" style="display:none" id="drop-f-p${p}"></div>`;
+    buildDriverDropdown(`drop-f-p${p}`, `f-p${p}`, false);
+    const btn = container.querySelector('.picker-btn');
+    if (btn) btn.onclick = () => togglePicker(`f-p${p}`, false);
+  });
+  // Pole, FL pickers
+  createDriverPicker('f-pole-picker', 'f-pole', false);
+  createTeamPicker('f-team-picker', 'f-team', false);
+  createDriverPicker('f-fl-picker', 'f-fl', false);
+  // Reset toggles
+  document.getElementById('f-dnf').value = 0;
+  scVal = null;
+  document.getElementById('sc-ano').className = 'toggle';
+  document.getElementById('sc-ne').className = 'toggle';
+  document.getElementById('save-status').textContent = '';
+}
+
+// ─── Override fillForm to set picker values ───
+const _origFillForm = fillForm;
+function fillForm(t) {
+  [1,2,3,4,5].forEach(i => {
+    const val = t[`p${i}`] || '';
+    selectDriver(`f-p${i}`, val || null, false);
+  });
+  selectDriver('f-pole', t.pole || null, false);
+  selectDriver('f-fl', t.fl || null, false);
+  selectTeam('f-team', t.team || null, false);
+  document.getElementById('f-dnf').value = t.dnf ?? 0;
+  scVal = t.sc || null;
+  document.getElementById('sc-ano').className = 'toggle' + (scVal === 'ANO' ? ' yes' : '');
+  document.getElementById('sc-ne').className = 'toggle' + (scVal === 'NE' ? ' no' : '');
+}
+
+// ─── Override resetResForm to use pickers in result form ───
+const _origResetResForm = resetResForm;
+function resetResForm() {
+  document.getElementById('result-top5').innerHTML = [1,2,3,4,5].map(p =>
+    `<div class="pw">
+      <span class="plbl" style="background:var(--amber)">P${p}</span>
+      <div class="driver-picker amber" data-field="r-p${p}" style="padding-top:8px">
+        <input type="hidden" id="r-p${p}">
+      </div>
+    </div>`
+  ).join('');
+  [1,2,3,4,5].forEach(p => {
+    const container = document.querySelector(`[data-field="r-p${p}"]`);
+    if (!container) return;
+    container.innerHTML = `<input type="hidden" id="r-p${p}">` + renderPickerBtn(`r-p${p}`, null, true) + `<div class="picker-dropdown" style="display:none" id="drop-r-p${p}"></div>`;
+    buildDriverDropdown(`drop-r-p${p}`, `r-p${p}`, true);
+    const btn = container.querySelector('.picker-btn');
+    if (btn) btn.onclick = () => togglePicker(`r-p${p}`, false);
+  });
+  createDriverPicker('r-pole-picker', 'r-pole', true);
+  createDriverPicker('r-fl-picker', 'r-fl', true);
+  createTeamPicker('r-team-picker', 'r-team', true);
+  document.getElementById('r-dnf').value = 0;
+  rSC = null;
+  document.getElementById('r-sc-yes').className = 'toggle';
+  document.getElementById('r-sc-no').className = 'toggle';
+  document.getElementById('result-save-status').textContent = '';
+}
+
+// ─── Override fillResForm ───
+const _origFillResForm = fillResForm;
+function fillResForm(res) {
+  [1,2,3,4,5].forEach(i => selectDriver(`r-p${i}`, res[`p${i}`] || null, true));
+  selectDriver('r-pole', res.pole || null, true);
+  selectDriver('r-fl', res.fl || null, true);
+  selectTeam('r-team', res.team || null, true);
+  document.getElementById('r-dnf').value = res.dnf || 0;
+  rSC = res.sc || null;
+  document.getElementById('r-sc-yes').className = 'toggle' + (rSC === 'ANO' ? ' yes' : '');
+  document.getElementById('r-sc-no').className = 'toggle' + (rSC === 'NE' ? ' no' : '');
+}
+
+init();loadResults();
+// ─── PLAYER PICK ───
+function renderPlayerPickCards(){
+  const c=document.getElementById('player-pick-cards');if(!c)return;
+  const allTips=mergeTips();
+  c.innerHTML=PLAYERS.map(p=>{
+    const cnt=allTips.filter(t=>t.player===p).length;
+    const init=p.slice(0,2).toUpperCase();
+    const sel=selPlayer===p;
+    return`<div class="pcard ${sel?'selected':''}" onclick="pickPlayer('${p}')">
+      <div class="pcard-check">✓</div>
+      <div class="pcard-avatar">${init}</div>
+      <div class="pcard-name">${p}</div>
+      <div class="pcard-sub">${cnt} tip${cnt===1?'':"ů"}</div>
+    </div>`;
+  }).join('');
+}
+function pickPlayer(p){selPlayer=p;showRacesForPlayer();}
+function showRacesForPlayer(){
+  if(!selPlayer)return;
+  const bar=document.getElementById('active-player-bar');
+  document.getElementById('player-pick-screen').style.display='none';
+  document.getElementById('races-section').style.display='block';
+  document.getElementById('tip-pg-sub').textContent='Vyber závodní víkend';
+  document.getElementById('apb-avatar').textContent=selPlayer.slice(0,2).toUpperCase();
+  document.getElementById('apb-name').textContent=selPlayer;
+  bar.classList.add('show');
+  renderWeekends();
+}
+function changePlayer(){
+  selPlayer=null;selRace=null;
+  document.getElementById('active-player-bar').classList.remove('show');
+  document.getElementById('player-pick-screen').style.display='block';
+  document.getElementById('races-section').style.display='none';
+  document.getElementById('tip-form-container').style.display='none';
+  document.getElementById('tip-pg-sub').textContent='Nejdřív vyber hráče';
+  renderPlayerPickCards();
+}
+
+// ─── renderWeekends: 3 sections (done / next / future) ───
+function renderWeekends(){
+  const c=document.getElementById('race-group-list');if(!c)return;
+  const wknds=buildWeekends();
+  const nextIdx=RACES.findIndex(r=>!isDone(r));
+
+  // Split weekends into 3 groups
+  const doneWknds=[], nextWknd=[], futureWknds=[];
+  wknds.forEach(w=>{
+    const ss=w.sessions;
+    const allDone=ss.every(s=>isDone(s));
+    const isNext=!allDone&&ss.some(s=>RACES.indexOf(s)===nextIdx);
+    if(allDone) doneWknds.push(w);
+    else if(isNext) nextWknd.push(w);
+    else futureWknds.push(w);
+  });
+
+  if(!window.openWknds) window.openWknds=new Set();
+
+  function renderWknd(w, forceOpen){
+    const ss=w.sessions;
+    const allDone=ss.every(s=>isDone(s));
+    const isNext=!allDone&&ss.some(s=>RACES.indexOf(s)===nextIdx);
+    const hasSprint=ss.some(s=>s.sprint);
+    const gp=ss.find(s=>!s.sprint)||ss[0];
+    const nm=gp.name.replace(' GP','').replace(' Sprint','');
+    const flag=getFlag(gp.id);
+    const isOpen=forceOpen||window.openWknds.has(w.date);
+    let wcls='',badge='';
+    if(allDone){wcls='is-done';badge='<div class="wb-done wknd-badge">✓ ODJETÉ</div>';}
+    else if(isNext){wcls='is-next';badge='<div class="wb-next wknd-badge">▶ PŘÍŠTĚ</div>';}
+    else badge='<div class="wb-soon wknd-badge">NADCHÁZEJÍCÍ</div>';
+    const sessHtml=ss.map(s=>{
+      const isSp=s.sprint;
+      const hasTip=localTips.some(t=>t.raceId===s.id)||sheetTips.some(t=>t.raceId===s.id);
+      const isAct=selRace?.id===s.id;
+      let sCls='ss-none',sTxt='Bez tipu';
+      if(s.done){sCls='ss-done';sTxt='✓ Odjeté';}
+      else if(hasTip){sCls='ss-tip';sTxt='✎ Tip uložen';}
+      return`<div class="session ${isAct?'is-active':''}" onclick="selectRace('${s.id}')">
+        <span class="sess-icon">${isSp?'◈':'◉'}</span>
+        <span class="sess-type ${isSp?'sprint':'race'}">${isSp?'SPRINT':'ZÁVOD'}</span>
+        <div class="sess-right"><div class="sess-state ${sCls}">${sTxt}</div></div>
+        <span class="sess-arrow">›</span>
+      </div>`;
+    }).join('');
+    return`<div class="wknd ${wcls} ${isOpen?'open':''}" id="wknd-${w.date.replace(/ /g,'_')}">
+      <div class="wknd-head" onclick="toggleWknd('${w.date}')">
+        <span class="wknd-flag">${flag}</span>
+        <span class="wknd-name">${nm.toUpperCase()}</span>
+        ${hasSprint?'<span class="sprint-pill">◈ SPRINT</span>':''}
+        <span class="wknd-date">${w.date}</span>
+        ${badge}
+        <span class="wknd-chevron">▼</span>
+      </div>
+      <div class="sessions-wrap"><div class="sessions">${sessHtml}</div></div>
+    </div>`;
+  }
+
+  // Section toggle helper
+  function secBtn(id, label, count, color, isOpen){
+    return`<div class="sec-group" id="sg-${id}">
+      <div class="sec-group-hd ${isOpen?'open':''}" onclick="toggleSecGroup('${id}')">
+        <span class="sg-icon" style="color:${color}">${id==='done'?'✓':id==='future'?'◎':'▶'}</span>
+        <span class="sg-label">${label}</span>
+        <span class="sg-count">${count} víkend${count===1?'':'y'}</span>
+        <span class="sg-chevron">▼</span>
+      </div>
+      <div class="sg-body" id="sgb-${id}" style="display:${isOpen?'flex':'none'};flex-direction:column;gap:5px;padding-top:6px"></div>
+    </div>`;
+  }
+
+  let html = '';
+
+  // DONE section (collapsed by default)
+  if(doneWknds.length){
+    const openDone = window.openWknds.has('__done__');
+    html += secBtn('done','Odjeté závody', doneWknds.length, 'var(--green)', openDone);
+  }
+
+  // NEXT weekend (always shown, always open)
+  if(nextWknd.length){
+    const w=nextWknd[0];
+    const gp=w.sessions.find(s=>!s.sprint)||w.sessions[0];
+    const nm=gp.name.replace(' GP','').replace(' Sprint','');
+    html += `<div class="next-race-highlight">
+      <div class="nrh-label">▶ PŘÍŠTÍ ZÁVOD</div>
+      ${renderWknd(w, true)}
+    </div>`;
+  }
+
+  // FUTURE section (collapsed by default)
+  if(futureWknds.length){
+    const openFuture = window.openWknds.has('__future__');
+    html += secBtn('future','Budoucí závody', futureWknds.length, 'var(--muted2)', openFuture);
+  }
+
+  c.innerHTML = html;
+
+  // Fill done bodies
+  if(doneWknds.length){
+    const body = document.getElementById('sgb-done');
+    if(body) body.innerHTML = doneWknds.slice().reverse().map(w=>renderWknd(w,false)).join('');
+  }
+  // Fill future bodies
+  if(futureWknds.length){
+    const body = document.getElementById('sgb-future');
+    if(body) body.innerHTML = futureWknds.map(w=>renderWknd(w,false)).join('');
+  }
+}
+
+function toggleSecGroup(id){
+  const hd = document.querySelector(`#sg-${id} .sec-group-hd`);
+  const body = document.getElementById(`sgb-${id}`);
+  if(!hd||!body) return;
+  const isOpen = hd.classList.contains('open');
+  if(isOpen){
+    hd.classList.remove('open');
+    body.style.display='none';
+    window.openWknds.delete(`__${id}__`);
+  } else {
+    hd.classList.add('open');
+    body.style.display='flex';
+    window.openWknds.add(`__${id}__`);
+  }
+}
+
+function toggleWknd(date){
+  if(!window.openWknds)window.openWknds=new Set();
+  const id='wknd-'+date.replace(/ /g,'_');
+  const el=document.getElementById(id);
+  if(!el)return;
+  if(window.openWknds.has(date)){window.openWknds.delete(date);el.classList.remove('open');}
+  else{window.openWknds.add(date);el.classList.add('open');}
+}
+
+// ─── OVERRIDE init ───
+function init(){
+  document.getElementById('setup-banner').classList.add('hidden');
+  if(scriptUrl)document.getElementById('script-url-input').value=scriptUrl;
+  testConn();renderStandings(FB_STANDINGS);loadStandings();
+  renderPlayerPickCards();renderResGrid();renderPlayerFilters();
+  selPlayer=null;
+}
+init();loadResults();
+
+setInterval(()=>{
+  document.querySelectorAll('[data-deadline-id]').forEach(el=>{
+    const s=RACES.find(r=>r.id===el.getAttribute('data-deadline-id'));
+    if(!s||!s.deadline||s.done)return;
+    const _dl=new Date(s.deadline),_d=_dl-new Date();
+    const v=el.querySelector('.sdl-val');if(!v)return;
+    const _fmt=_dl.toLocaleString('cs-CZ',{weekday:'short',day:'numeric',month:'numeric',hour:'2-digit',minute:'2-digit'});
+    let _t,_c;
+    if(_d<=0){_t='🔒 Uzavřeno';_c='dl-locked';}
+    else if(_d<3600000){_t='⏱ za '+Math.floor(_d/60000)+' min ('+_fmt+')';_c='dl-urgent';}
+    else if(_d<10800000){const hh=Math.floor(_d/3600000),mm=Math.floor((_d%3600000)/60000);_t='⏱ za '+hh+'h '+mm+'m ('+_fmt+')';_c='dl-soon';}
+    else return;
+    v.textContent=_t;el.className='sess-deadline '+_c;
+  });
+},30000);
+
+// Spusteni
+document.addEventListener('DOMContentLoaded', function() { loInit(); });
+
+// ═══ NAČÍTÁNÍ VÝSLEDKŮ Z F1 API ═══
+// Mapování race ID na OpenF1 circuit kódy a round čísla
+const RACE_API_MAP = {
+  'australia':          { country: 'Australia',      circuit: 'Melbourne',  round: 1,  year: 2026 },
+  'china-sprint':       { country: 'China',           circuit: 'Shanghai',   round: 2,  year: 2026, sprint: true },
+  'china-gp':           { country: 'China',           circuit: 'Shanghai',   round: 2,  year: 2026 },
+  'japan':              { country: 'Japan',           circuit: 'Suzuka',     round: 3,  year: 2026 },
+  'miami-sprint':       { country: 'United States',   circuit: 'Miami',      round: 5,  year: 2026, sprint: true },
+  'miami-gp':           { country: 'United States',   circuit: 'Miami',      round: 5,  year: 2026 },
+  'canada-sprint':      { country: 'Canada',          circuit: 'Montreal',   round: 6,  year: 2026, sprint: true },
+  'canada-gp':          { country: 'Canada',          circuit: 'Montreal',   round: 6,  year: 2026 },
+  'monaco':             { country: 'Monaco',          circuit: 'Monaco',     round: 7,  year: 2026 },
+  'spain-barcelona':    { country: 'Spain',           circuit: 'Barcelona',  round: 8,  year: 2026 },
+  'austria':            { country: 'Austria',         circuit: 'Spielberg',  round: 9,  year: 2026 },
+  'great-britain-sprint':{ country: 'Great Britain',  circuit: 'Silverstone',round: 10, year: 2026, sprint: true },
+  'great-britain-gp':   { country: 'Great Britain',   circuit: 'Silverstone',round: 10, year: 2026 },
+  'belgium':            { country: 'Belgium',         circuit: 'Spa',        round: 11, year: 2026 },
+  'hungary':            { country: 'Hungary',         circuit: 'Budapest',   round: 12, year: 2026 },
+  'netherlands-sprint': { country: 'Netherlands',     circuit: 'Zandvoort',  round: 13, year: 2026, sprint: true },
+  'netherlands-gp':     { country: 'Netherlands',     circuit: 'Zandvoort',  round: 13, year: 2026 },
+  'italy':              { country: 'Italy',           circuit: 'Monza',      round: 14, year: 2026 },
+  'spain-madrid':       { country: 'Spain',           circuit: 'Madrid',     round: 15, year: 2026 },
+  'azerbaijan':         { country: 'Azerbaijan',      circuit: 'Baku',       round: 16, year: 2026 },
+  'singapore-sprint':   { country: 'Singapore',       circuit: 'Singapore',  round: 17, year: 2026, sprint: true },
+  'singapore-gp':       { country: 'Singapore',       circuit: 'Singapore',  round: 17, year: 2026 },
+  'usa-austin':         { country: 'United States',   circuit: 'Austin',     round: 18, year: 2026 },
+  'mexico':             { country: 'Mexico',          circuit: 'Mexico City',round: 19, year: 2026 },
+  'brazil':             { country: 'Brazil',          circuit: 'Sao Paulo',  round: 20, year: 2026 },
+  'las-vegas':          { country: 'United States',   circuit: 'Las Vegas',  round: 21, year: 2026 },
+  'qatar':              { country: 'Qatar',           circuit: 'Lusail',     round: 22, year: 2026 },
+  'abu-dhabi':          { country: 'United Arab Emirates', circuit: 'Yas Marina', round: 23, year: 2026 },
+};
+
+async function loadF1Results() {
+  if (!selResRace) { toast('Nejdřív vyber závod', 'error'); return; }
+  
+  const apiInfo = RACE_API_MAP[selResRace.id];
+  if (!apiInfo) { toast('Tento závod nemá API mapování', 'error'); return; }
+  
+  const btn = document.getElementById('btn-load-api');
+  if (btn) { btn.textContent = '⏳ Načítám...'; btn.disabled = true; }
+
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  try {
+    const isSprint = selResRace.sprint;
+    const sessionName = isSprint ? 'Sprint' : 'Race';
+    
+    // 1. Session key pres GAS proxy
+    toast('⏳ Načítám session...', 'info');
+    const sessions = await gGet('f1sessions', {
+      year: apiInfo.year,
+      circuit_short_name: apiInfo.circuit,
+      session_name: sessionName
+    });
+    
+    console.log('Sessions:', JSON.stringify(sessions));
+    
+    if (!Array.isArray(sessions) || sessions.length === 0) {
+      toast('Data zatím nejsou dostupná', 'error'); return;
+    }
+    const sessionKey = sessions[0].session_key;
+    await sleep(600);
+
+    // 2. Jezdci
+    toast('⏳ Načítám jezdce...', 'info');
+    const driversData = await gGet('f1drivers', { session_key: sessionKey });
+    const numToName = {}, numToTeam = {};
+    if (Array.isArray(driversData)) {
+      driversData.forEach(d => {
+        numToName[d.driver_number] = formatDriverName((d.first_name + ' ' + d.last_name).trim());
+        numToTeam[d.driver_number] = d.team_name || '';
+      });
+    }
+    await sleep(600);
+
+    // 3. Vysledky
+    toast('⏳ Načítám výsledky...', 'info');
+    const raceResults = await gGet('f1results', { session_key: sessionKey });
+    
+    console.log('Results:', JSON.stringify(raceResults).substring(0, 200));
+    
+    if (!Array.isArray(raceResults) || raceResults.length === 0) {
+      toast('Výsledky zatím nejsou dostupné', 'error'); return;
+    }
+    
+    const finishers = raceResults.filter(r => r.position !== null && !r.dnf)
+                                  .sort((a, b) => a.position - b.position);
+    const dnfs = raceResults.filter(r => r.dnf);
+    
+    // P1-P5
+    ['r-p1','r-p2','r-p3','r-p4','r-p5'].forEach((id, i) => {
+      const name = finishers[i] ? (numToName[finishers[i].driver_number] || '') : '';
+      if (name) {
+        const el = document.getElementById(id);
+        if (el) el.value = name;
+        if (typeof selectDriver === 'function') selectDriver(id, name, true);
+      }
+    });
+    
+    // DNF
+    const dnfEl = document.getElementById('r-dnf');
+    if (dnfEl) dnfEl.value = dnfs.length;
+    
+    // Fastest Lap - najdi jezdce s nejnizsim lap_duration
+    // Pouzij stints nebo position data - session_result nema FL flag
+    // Zkus z race_control - FL je oznamen jako "FASTEST LAP"
+// FL se nacita po race_control
+    
+    // Nejlepsi tym - tym ktery ziskal nejvice bodu (oba jezdci dohromady)
+    const RACE_PTS = {1:25,2:18,3:15,4:12,5:10,6:8,7:6,8:4,9:2,10:1};
+    const teamScores = {};
+    finishers.forEach(r => {
+      const pts = RACE_PTS[r.position] || 0;
+      const team = mapTeamName(numToTeam[r.driver_number] || '');
+      if (team) teamScores[team] = (teamScores[team]||0) + pts;
+    });
+    const bestTeam = Object.entries(teamScores).sort((a,b)=>b[1]-a[1])[0];
+    if (bestTeam) {
+      const teamEl = document.getElementById('r-team');
+      if (teamEl) teamEl.value = bestTeam[0];
+      if (typeof selectDriver === 'function') selectDriver('r-team', bestTeam[0], true);
+    }
+    await sleep(600);
+
+    // 4. Safety Car + Fastest Lap z race_control - s retry
+    let rcData = [];
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await sleep(800 * attempt);
+        const rcResp = await gGet('f1racecontrol', { session_key: sessionKey });
+        if (Array.isArray(rcResp)) { rcData = rcResp; break; }
+        if (rcResp && rcResp.error) { console.log('RC error:', rcResp.error); break; }
+      } catch(e) { 
+        console.log('RC attempt', attempt, 'error:', e.message);
+        if (attempt === 2) break;
+        await sleep(2000);
+      }
+    }
+    if (Array.isArray(rcData)) {
+      const hasSC = rcData.some(r => r.message &&
+        r.message.includes('SAFETY CAR') &&
+        !r.message.toUpperCase().includes('VIRTUAL') &&
+        (r.message.includes('DEPLOYED') || r.message.includes('IN THIS LAP') || r.message === 'SAFETY CAR'));
+      if (hasSC) {
+        rSC = 'ANO';
+        document.getElementById('r-sc-yes').className = 'toggle yes';
+        document.getElementById('r-sc-no').className = 'toggle';
+      }
+    }
+    await sleep(600);
+
+    // 5. Pole Position z qualifying
+    const qualiName = isSprint ? 'Sprint Qualifying' : 'Qualifying';
+    const qualiSessions = await gGet('f1sessions', {
+      year: apiInfo.year,
+      circuit_short_name: apiInfo.circuit,
+      session_name: qualiName
+    });
+    if (Array.isArray(qualiSessions) && qualiSessions.length > 0) {
+      await sleep(600);
+      const qualiKey = qualiSessions[0].session_key;
+      const qualiRes = await gGet('f1results', { session_key: qualiKey });
+      if (Array.isArray(qualiRes)) {
+        const pole = qualiRes.find(r => r.position === 1);
+        if (pole) {
+          const poleName = numToName[pole.driver_number] || '';
+          if (poleName) {
+            const poleEl = document.getElementById('r-pole');
+            if (poleEl) poleEl.value = poleName;
+            if (typeof selectDriver === 'function') selectDriver('r-pole', poleName, true);
+          }
+        }
+      }
+    }
+
+    toast('✓ Výsledky načteny! Zkontroluj FL a SC a ulož.', 'success');
+    
+  } catch(e) {
+    console.error('F1 API error:', e);
+    toast('Chyba: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.textContent = '⬇ Načíst z F1 API'; btn.disabled = false; }
+  }
+}
+
+function formatDriverName(name) {
+  // OpenF1 vraci "VERSTAPPEN Max" nebo "Max Verstappen" - normalizuj
+  if (!name) return '';
+  // Zkus najit shodu v DRIVERS poli
+  const upper = name.toUpperCase();
+  for (const d of DRIVERS) {
+    const parts = d.split(' ');
+    const lastName = parts[parts.length - 1].toUpperCase();
+    if (upper.includes(lastName)) return d;
+  }
+  return name;
+}
+
+function mapTeamName(apiTeam) {
+  // Mapuj API nazvy tymu na nase nazvy
+  const map = {
+    'Red Bull Racing': 'Red Bull Racing',
+    'Ferrari': 'Ferrari', 
+    'Mercedes': 'Mercedes',
+    'McLaren': 'McLaren',
+    'Aston Martin': 'Aston Martin',
+    'Alpine': 'Alpine',
+    'Haas F1 Team': 'Haas',
+    'Haas': 'Haas',
+    'RB': 'Racing Bulls',
+    'Racing Bulls': 'Racing Bulls',
+    'Kick Sauber': 'Audi',
+    'Audi': 'Audi',
+    'Williams': 'Williams',
+    'Cadillac': 'Cadillac',
+  };
+  for (const [key, val] of Object.entries(map)) {
+    if (apiTeam.includes(key)) return val;
+  }
+  return apiTeam;
+}
+</script>
+</body>
+</html>
