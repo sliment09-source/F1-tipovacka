@@ -2184,9 +2184,9 @@ async function loadF1Results() {
     }
     await sleep(600);
 
-    // FL z race_control - hledej FASTEST LAP zpravu
+    // FL - nejprve zkus z race_control
+    let flLoaded = false;
     if (Array.isArray(rcData) && rcData.length > 0) {
-      // OpenF1 race_control muze mit FL jako kategorii
       const flMsg = rcData.find(r => 
         (r.category === 'Other' && r.message && r.message.includes('FASTEST LAP')) ||
         (r.flag === 'FASTEST LAP')
@@ -2197,8 +2197,24 @@ async function loadF1Results() {
           const flEl = document.getElementById('r-fl');
           if (flEl) flEl.value = flName;
           if (typeof selectDriver === 'function') selectDriver('r-fl', flName, true);
+          flLoaded = true;
         }
       }
+    }
+    // Pokud FL neni v race_control, nacti z laps endpointu
+    if (!flLoaded) {
+      try {
+        await sleep(800);
+        const flData = await gGet('f1fastestlap', { session_key: sessionKey });
+        if (flData && flData.driver_number) {
+          const flName = numToName[flData.driver_number] || '';
+          if (flName) {
+            const flEl = document.getElementById('r-fl');
+            if (flEl) flEl.value = flName;
+            if (typeof selectDriver === 'function') selectDriver('r-fl', flName, true);
+          }
+        }
+      } catch(e) { console.log('FL laps error:', e.message); }
     }
 
     // 5. Pole Position z qualifying
