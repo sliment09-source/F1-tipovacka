@@ -1895,14 +1895,29 @@ function computePlayerStats(player){
     poleRate:racesScored?poleHits/racesScored*100:0
   };
 }
-function tierFor(count){
-  if(count>=10)return'gold';
-  if(count>=5)return'silver';
-  return'bronze';
+function tierFor(count,base){
+  const b=base||{bronze:3,silver:5,gold:10};
+  if(count>=b.gold)return'gold';
+  if(count>=b.silver)return'silver';
+  if(count>=b.bronze)return'bronze';
+  return null;
 }
 function computeAchievements(player){
   const tips=mergeTips().filter(t=>t.player===player);
   const scoredRaces=RACES.filter(r=>localResult[r.id]);
+  const totalRaces=RACES.length;
+  // Prahy pro pole/FL/SC/bonus škálované podle délky sezóny (28 závodů = běžný základ)
+  const hitBase={
+    bronze:Math.max(3,Math.round(totalRaces*0.18)),
+    silver:Math.max(6,Math.round(totalRaces*0.35)),
+    gold:Math.max(10,Math.round(totalRaces*0.60))
+  };
+  // Perfektní TOP5 je samo o sobě vzácné, škáluje se jemněji
+  const perfectBase={
+    bronze:1,
+    silver:Math.max(3,Math.round(totalRaces*0.12)),
+    gold:Math.max(6,Math.round(totalRaces*0.25))
+  };
   let perfectTop5=0,poleHits=0,flHits=0,scHits=0,bonusCount=0;
   scoredRaces.forEach(race=>{
     const tip=tips.find(t=>t.raceId===race.id);
@@ -1917,11 +1932,16 @@ function computeAchievements(player){
     if(sc.bonus>0)bonusCount++;
   });
   const badges=[];
-  if(perfectTop5>0)badges.push({icon:'🎯',label:'Perfektní TOP5',desc:perfectTop5+'x trefil všech 5 pozic přesně',tier:tierFor(perfectTop5)});
-  if(poleHits>=3)badges.push({icon:'🔮',label:'Věštec pole',desc:poleHits+'x trefená pole position',tier:tierFor(poleHits)});
-  if(flHits>=3)badges.push({icon:'⚡',label:'Rychlá ruka',desc:flHits+'x trefené nejrychlejší kolo',tier:tierFor(flHits)});
-  if(scHits>=5)badges.push({icon:'🎲',label:'SC senzor',desc:scHits+'x trefený safety car',tier:tierFor(scHits)});
-  if(bonusCount>=3)badges.push({icon:'💥',label:'Bonusový král',desc:bonusCount+'x získaný bonus za 3+ trefy',tier:tierFor(bonusCount)});
+  const perfectTier=tierFor(perfectTop5,perfectBase);
+  if(perfectTier)badges.push({icon:'🎯',label:'Perfektní TOP5',desc:perfectTop5+'x trefil všech 5 pozic přesně',tier:perfectTier});
+  const poleTier=tierFor(poleHits,hitBase);
+  if(poleTier)badges.push({icon:'🔮',label:'Věštec pole',desc:poleHits+'x trefená pole position',tier:poleTier});
+  const flTier=tierFor(flHits,hitBase);
+  if(flTier)badges.push({icon:'⚡',label:'Rychlá ruka',desc:flHits+'x trefené nejrychlejší kolo',tier:flTier});
+  const scTier=tierFor(scHits,hitBase);
+  if(scTier)badges.push({icon:'🎲',label:'SC senzor',desc:scHits+'x trefený safety car',tier:scTier});
+  const bonusTier=tierFor(bonusCount,hitBase);
+  if(bonusTier)badges.push({icon:'💥',label:'Bonusový král',desc:bonusCount+'x získaný bonus za 3+ trefy',tier:bonusTier});
   return badges;
 }
 function showBadgeInfo(el){
@@ -2169,7 +2189,8 @@ async function saveResult(){if(!selResRace)return;const result={raceId:selResRac
 function showScores(raceId){const result=localResult[raceId];const race=RACES.find(r=>r.id===raceId);const card=document.getElementById('scores-card');if(!result){card.style.display='none';return;}card.style.display='block';document.getElementById('scores-title').textContent=`VÝSLEDKY — ${(race?.name||raceId).toUpperCase()}`;const allTips=mergeTips().filter(t=>t.raceId===raceId);const rows=PLAYERS.map(player=>{const tip=allTips.find(t=>t.player===player);if(!tip)return{player,scored:null};return{player,scored:calc(tip,result,race?.sprint||false)};}).sort((a,b)=>(b.scored?.total||0)-(a.scored?.total||0));const pCell=v=>{const cls=v>=8?'pts-hi':v>=4?'pts-md':v>0?'pts-lo':'pts-zr';return`<td><span class="${cls}">${v>0?v:'—'}</span></td>`;};document.getElementById('scores-tbody').innerHTML=rows.map(({player,scored})=>{if(!scored)return`<tr><td>${player}</td><td colspan="8" style="color:#333;text-align:center;font-size:12px">Žádný tip</td></tr>`;const tc=scored.total>=40?'pts-hi':scored.total>=20?'pts-md':'pts-lo';return`<tr><td>${player}</td>${pCell(scored.top5)}${pCell(scored.pole)}${pCell(scored.fl)}${pCell(scored.dnf)}${pCell(scored.sc)}${pCell(scored.team)}${pCell(scored.bonus)}<td><span class="${tc}" style="font-size:18px">${scored.total}</span></td></tr>`;}).join('');}
 async function loadResults(){try{const d=await gGet('results');if(d.results){Object.assign(localResult,d.results);localStorage.setItem('f1_results_2026',JSON.stringify(localResult));}}catch(e){}}
 function showViewAdmin(btn){document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('view-results').classList.add('active');btn.classList.add('active');renderResGrid();}
-function toast(msg,type='success'){const t=document.getElementById('toast');t.textContent=msg;t.className='toast '+type;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),3500);}
+let _toastTimer=null;
+function toast(msg,type='success'){const t=document.getElementById('toast');if(_toastTimer)clearTimeout(_toastTimer);t.textContent=msg;t.className='toast '+type;t.classList.add('show');_toastTimer=setTimeout(()=>t.classList.remove('show'),3500);}
 
 // ═══════════════════════════════════════════════════
 // DRIVER & TEAM PHOTO PICKER
