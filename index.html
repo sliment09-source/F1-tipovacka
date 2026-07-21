@@ -291,6 +291,9 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .extras{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
 .fgrp{display:flex;flex-direction:column;gap:7px}
 .flbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:var(--muted2);text-transform:uppercase}
+.field-hint{font-size:11px;color:var(--muted2);margin-top:6px;line-height:1.4}
+.field-hint b{color:var(--text2);font-weight:700}
+.field-hint-pct{color:var(--muted)}
 .sc-row{display:flex;gap:6px}
 .toggle{flex:1;padding:11px;border-radius:9px;border:1px solid var(--line2);background:transparent;color:var(--muted2);cursor:pointer;font-size:13px;font-weight:600;transition:all .18s;font-family:'Inter',sans-serif}
 .toggle:hover{border-color:var(--line3);color:var(--text)}
@@ -1261,14 +1264,14 @@ body.theme-light .theme-toggle:hover{background:rgba(0,0,0,.05)}
       <div class="t5grid" id="top5-selects"></div>
       <div class="divider"></div>
       <div class="extras">
-        <div class="fgrp"><label class="flbl">Pole Position</label><div class="driver-picker" id="f-pole-picker" data-field="f-pole"></div><input type="hidden" id="f-pole"></div>
-        <div class="fgrp"><label class="flbl">Fastest Lap</label><div class="driver-picker" id="f-fl-picker" data-field="f-fl"></div><input type="hidden" id="f-fl"></div>
-        <div class="fgrp"><label class="flbl">Nejlepší tým</label><div class="team-picker" id="f-team-picker" data-field="f-team"></div><input type="hidden" id="f-team"></div>
+        <div class="fgrp"><label class="flbl">Pole Position</label><div class="driver-picker" id="f-pole-picker" data-field="f-pole"></div><input type="hidden" id="f-pole"><div class="field-hint" id="hint-f-pole"></div></div>
+        <div class="fgrp"><label class="flbl">Fastest Lap</label><div class="driver-picker" id="f-fl-picker" data-field="f-fl"></div><input type="hidden" id="f-fl"><div class="field-hint" id="hint-f-fl"></div></div>
+        <div class="fgrp"><label class="flbl">Nejlepší tým</label><div class="team-picker" id="f-team-picker" data-field="f-team"></div><input type="hidden" id="f-team"><div class="field-hint" id="hint-f-team"></div></div>
       </div>
       <div class="divider"></div>
       <div class="extras">
-        <div class="fgrp"><label class="flbl">Počet DNF</label><input type="number" class="finput" id="f-dnf" min="0" max="20" value="0" style="width:80px"></div>
-        <div class="fgrp"><label class="flbl">Safety Car?</label><div class="sc-row"><button class="toggle" id="sc-ano" onclick="toggleSC('ANO')">ANO</button><button class="toggle" id="sc-ne" onclick="toggleSC('NE')">NE</button></div></div>
+        <div class="fgrp"><label class="flbl">Počet DNF</label><input type="number" class="finput" id="f-dnf" min="0" max="20" value="0" style="width:80px"><div class="field-hint" id="hint-f-dnf"></div></div>
+        <div class="fgrp"><label class="flbl">Safety Car?</label><div class="sc-row"><button class="toggle" id="sc-ano" onclick="toggleSC('ANO')">ANO</button><button class="toggle" id="sc-ne" onclick="toggleSC('NE')">NE</button></div><div class="field-hint" id="hint-f-sc"></div></div>
       </div>
       <div class="form-acts">
         <span class="save-status" id="save-status"></span>
@@ -2551,6 +2554,7 @@ function renderDriverSelects() {
       <div class="driver-picker" data-field="f-p${p}" style="padding-top:8px">
         <input type="hidden" id="f-p${p}">
       </div>
+      <div class="field-hint" id="hint-f-p${p}"></div>
     </div>`
   ).join('');
   // Init each top5 picker
@@ -2572,6 +2576,39 @@ function renderDriverSelects() {
   document.getElementById('sc-ano').className = 'toggle';
   document.getElementById('sc-ne').className = 'toggle';
   document.getElementById('save-status').textContent = '';
+  renderFieldHints();
+}
+function computeFieldFrequency(field){
+  const counts={};
+  let total=0;
+  Object.values(localResult).forEach(res=>{
+    if(!res)return;
+    const val=res[field];
+    if(val===undefined||val===null||val==='')return;
+    const key=String(val);
+    counts[key]=(counts[key]||0)+1;
+    total++;
+  });
+  if(total===0)return null;
+  let best=null,bestCount=0;
+  Object.entries(counts).forEach(([name,cnt])=>{if(cnt>bestCount){best=name;bestCount=cnt;}});
+  if(best===null)return null;
+  return{name:best,count:bestCount,total,pct:Math.round(bestCount/total*100)};
+}
+function renderFieldHints(){
+  const specs=[
+    ['p1','hint-f-p1'],['p2','hint-f-p2'],['p3','hint-f-p3'],['p4','hint-f-p4'],['p5','hint-f-p5'],
+    ['pole','hint-f-pole'],['fl','hint-f-fl'],['team','hint-f-team'],
+    ['dnf','hint-f-dnf'],['sc','hint-f-sc']
+  ];
+  specs.forEach(([field,elId])=>{
+    const el=document.getElementById(elId);
+    if(!el)return;
+    const stat=computeFieldFrequency(field);
+    if(!stat){el.innerHTML='';return;}
+    const label=field==='dnf'?stat.name+' DNF':field==='sc'?(stat.name==='ANO'?'ANO':'NE'):stat.name;
+    el.innerHTML=`💡 Nejčastěji: <b>${label}</b> <span class="field-hint-pct">(${stat.pct}%${stat.total<5?' · málo dat':''})</span>`;
+  });
 }
 
 // ─── Override fillForm to set picker values ───
