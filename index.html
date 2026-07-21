@@ -116,7 +116,12 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .stat-row:last-child{border-bottom:none}
 .stat-row b{color:var(--text);font-weight:700;font-size:13px;text-align:right}
 .stat-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
-.stat-badge{width:30px;height:30px;border-radius:50%;background:rgba(232,0,45,.08);border:1px solid rgba(232,0,45,.25);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:default}
+.stat-badge{width:30px;height:30px;border-radius:50%;background:rgba(232,0,45,.08);border:1px solid rgba(232,0,45,.25);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;transition:transform .15s}
+.stat-badge:hover{transform:scale(1.12)}
+.stat-badge:active{transform:scale(0.95)}
+.stat-badge.tier-bronze{background:rgba(205,127,50,.13);border-color:rgba(205,127,50,.4)}
+.stat-badge.tier-silver{background:rgba(168,168,179,.16);border-color:rgba(168,168,179,.45)}
+.stat-badge.tier-gold{background:rgba(245,196,0,.16);border-color:rgba(245,196,0,.5);box-shadow:0 0 10px rgba(245,196,0,.3)}
 
 /* Stats tabs (Hráči / Jezdci) */
 .stats-tabs{display:flex;gap:8px;margin-bottom:18px}
@@ -1890,14 +1895,18 @@ function computePlayerStats(player){
     poleRate:racesScored?poleHits/racesScored*100:0
   };
 }
+function tierFor(count){
+  if(count>=10)return'gold';
+  if(count>=5)return'silver';
+  return'bronze';
+}
 function computeAchievements(player){
   const tips=mergeTips().filter(t=>t.player===player);
   const scoredRaces=RACES.filter(r=>localResult[r.id]);
-  let perfectTop5=0,poleHits=0,flHits=0,scHits=0,bonusCount=0,scoredTipCount=0;
+  let perfectTop5=0,poleHits=0,flHits=0,scHits=0,bonusCount=0;
   scoredRaces.forEach(race=>{
     const tip=tips.find(t=>t.raceId===race.id);
     if(!tip)return;
-    scoredTipCount++;
     const res=localResult[race.id];
     const sc=calc(tip,res,race.sprint||false);
     const exactCount=['p1','p2','p3','p4','p5'].filter(k=>tip[k]&&tip[k]===res[k]).length;
@@ -1907,15 +1916,18 @@ function computeAchievements(player){
     if(tip.sc&&tip.sc===res.sc)scHits++;
     if(sc.bonus>0)bonusCount++;
   });
-  const noMiss=scoredRaces.length>0&&scoredTipCount===scoredRaces.length;
   const badges=[];
-  if(perfectTop5>0)badges.push({icon:'🎯',label:'Perfektní TOP5',desc:perfectTop5+'x trefil všech 5 pozic přesně'});
-  if(noMiss)badges.push({icon:'🔥',label:'Bez výpadku',desc:'Tipnul úplně každý odjetý závod'});
-  if(poleHits>=3)badges.push({icon:'🔮',label:'Věštec pole',desc:poleHits+'x trefená pole position'});
-  if(flHits>=3)badges.push({icon:'⚡',label:'Rychlá ruka',desc:flHits+'x trefené nejrychlejší kolo'});
-  if(scHits>=5)badges.push({icon:'🎲',label:'SC senzor',desc:scHits+'x trefený safety car'});
-  if(bonusCount>=3)badges.push({icon:'💥',label:'Bonusový král',desc:bonusCount+'x získaný bonus za 3+ trefy'});
+  if(perfectTop5>0)badges.push({icon:'🎯',label:'Perfektní TOP5',desc:perfectTop5+'x trefil všech 5 pozic přesně',tier:tierFor(perfectTop5)});
+  if(poleHits>=3)badges.push({icon:'🔮',label:'Věštec pole',desc:poleHits+'x trefená pole position',tier:tierFor(poleHits)});
+  if(flHits>=3)badges.push({icon:'⚡',label:'Rychlá ruka',desc:flHits+'x trefené nejrychlejší kolo',tier:tierFor(flHits)});
+  if(scHits>=5)badges.push({icon:'🎲',label:'SC senzor',desc:scHits+'x trefený safety car',tier:tierFor(scHits)});
+  if(bonusCount>=3)badges.push({icon:'💥',label:'Bonusový král',desc:bonusCount+'x získaný bonus za 3+ trefy',tier:tierFor(bonusCount)});
   return badges;
+}
+function showBadgeInfo(el){
+  const tierNames={bronze:'🥉 Bronze',silver:'🥈 Silver',gold:'🥇 Gold'};
+  const tierTxt=tierNames[el.dataset.tier]||'';
+  toast(el.dataset.label+' '+tierTxt+' — '+el.dataset.desc,'success');
 }
 function renderStatsPlayers(){
   const el=document.getElementById('stats-players');
@@ -1925,7 +1937,7 @@ function renderStatsPlayers(){
     const bestNm=s.bestRace?s.bestRace.name.replace(' GP','').replace(' Sprint',''):'—';
     const badges=computeAchievements(p);
     const badgesHtml=badges.length
-      ?`<div class="stat-badges">${badges.map(b=>`<span class="stat-badge" title="${b.label}: ${b.desc}">${b.icon}</span>`).join('')}</div>`
+      ?`<div class="stat-badges">${badges.map(b=>`<span class="stat-badge tier-${b.tier}" title="${b.label}: ${b.desc}" data-label="${b.label}" data-desc="${b.desc}" data-tier="${b.tier}" onclick="showBadgeInfo(this)">${b.icon}</span>`).join('')}</div>`
       :'';
     return `<div class="stat-card">
       <div class="stat-card-name">${p}</div>
