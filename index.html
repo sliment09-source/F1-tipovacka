@@ -92,6 +92,12 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .pos-num{font-family:'Bebas Neue',sans-serif;font-size:14px;line-height:1;display:flex;align-items:center;gap:0}
 .p1{color:var(--gold)}.p2{color:var(--silver)}.p3{color:var(--bronze)}.pN{color:var(--muted)}
 .plr-name{font-size:15px;font-weight:600;letter-spacing:.1px}
+.stand-row-wrap.stand-row-me .stand-row{background:rgba(232,0,45,.055);box-shadow:inset 3px 0 0 var(--red)}
+.me-pill{display:inline-block;font-size:9px;font-weight:800;letter-spacing:.5px;color:var(--red);border:1px solid rgba(232,0,45,.4);background:rgba(232,0,45,.1);border-radius:5px;padding:1px 5px;margin-left:7px;vertical-align:middle}
+.pos-trend{display:block;text-align:center;font-size:9px;font-weight:700;margin-top:3px;letter-spacing:0}
+.trend-up{color:var(--green)}
+.trend-down{color:var(--red)}
+.trend-same{color:var(--muted)}
 .pts-big{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);letter-spacing:-1px}
 .rpills{display:flex;flex-wrap:wrap;gap:5px}
 .rpill{font-size:11px;color:var(--muted2);padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
@@ -133,6 +139,12 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .stat-badge.tier-bronze{background:rgba(205,127,50,.13);border-color:rgba(205,127,50,.4)}
 .stat-badge.tier-silver{background:rgba(168,168,179,.16);border-color:rgba(168,168,179,.45)}
 .stat-badge.tier-gold{background:rgba(245,196,0,.16);border-color:rgba(245,196,0,.5);box-shadow:0 0 10px rgba(245,196,0,.3)}
+.confetti-layer{position:fixed;inset:0;pointer-events:none;z-index:99999;overflow:hidden}
+.confetti-piece{position:absolute;top:-20px;width:8px;height:12px;opacity:.9;border-radius:2px;animation-name:confetti-fall;animation-timing-function:ease-in;animation-fill-mode:forwards}
+@keyframes confetti-fall{
+  0%{transform:translateY(0) rotate(0deg);opacity:1}
+  100%{transform:translateY(100vh) rotate(540deg);opacity:0}
+}
 
 /* Stats tabs (Hráči / Jezdci) */
 .stats-tabs{display:flex;gap:8px;margin-bottom:18px}
@@ -1540,7 +1552,13 @@ function updateThemeToggleIcon(){
 }
 updateThemeToggleIcon();
 function renderLoginBars(){
-  document.querySelectorAll('.login-status-avatar').forEach(el=>el.textContent=(currentPlayer||'').slice(0,2).toUpperCase());
+  const c=playerColor(currentPlayer);
+  document.querySelectorAll('.login-status-avatar').forEach(el=>{
+    el.textContent=(currentPlayer||'').slice(0,2).toUpperCase();
+    el.style.background=c+'26';
+    el.style.borderColor=c+'66';
+    el.style.color=c;
+  });
   document.querySelectorAll('.login-status-name').forEach(el=>el.textContent=currentPlayer||'');
 }
 
@@ -1572,6 +1590,8 @@ function loB2(s){var b1=document.getElementById('lo-bcr');if(b1)b1.disabled=s;va
 
 const FALLBACK_URL='https://script.google.com/macros/s/AKfycbwhdo_O0jubW6MLBZHtUMutS5WZXj9_CsdoJM-mnij8iAxz5h3gapE2373vRO2XJPCB/exec';
 const PLAYERS=['Michal','Milan','Vláďa','Ondra','Markét'];
+const STATS_PALETTE=['#e8002d','#3b82f6','#f5c400','#00e676','#a78bfa','#fb923c'];
+function playerColor(name){const idx=PLAYERS.indexOf(name);return STATS_PALETTE[idx>=0?idx%STATS_PALETTE.length:0];}
 const DRIVERS=['Max Verstappen','Isack Hadjar','Lando Norris','Oscar Piastri','George Russell','Kimi Antonelli','Charles Leclerc','Lewis Hamilton','Fernando Alonso','Lance Stroll','Pierre Gasly','Franco Colapinto','Esteban Ocon','Oliver Bearman','Liam Lawson','Arvid Lindblad','Nico Hulkenberg','Gabriel Bortoleto','Carlos Sainz','Alexander Albon','Sergio Perez','Valtteri Bottas','TBA'];
 const TEAMS=['Red Bull Racing','Ferrari','Mercedes','McLaren','Aston Martin','Alpine','Haas','Racing Bulls','Audi','Williams','Cadillac','TBA'];
 const RACES=[
@@ -1761,28 +1781,54 @@ function renderStandingsSkeleton(){
     <div class="skel-box skel-pills"></div>
   </div>`).join('');
 }
+function computePositionTrend(cache){
+  const raceHeaders=(cache.headers||[]).filter(h=>h!=='CELKEM');
+  const trend={};
+  if(raceHeaders.length<2)return trend;
+  const lastHeader=raceHeaders[raceHeaders.length-1];
+  const prevTotals=cache.data.map(p=>{
+    const name=p.name||p['Hráč']||'?';
+    const total=Number(p.CELKEM)||0;
+    const lastVal=Number(p[lastHeader])||0;
+    return{name,prevTotal:total-lastVal};
+  }).sort((a,b)=>b.prevTotal-a.prevTotal);
+  prevTotals.forEach((p,i)=>{trend[p.name]=i+1;});
+  return trend;
+}
 let lastStandingsCache=null;
 function renderStandings(data,headers){
   lastStandingsCache={data,headers};
   const s=data.slice().sort((a,b)=>(Number(b.CELKEM)||0)-(Number(a.CELKEM)||0));
   const leader = Number(s[0]?.CELKEM)||0;
+  const prevRank=computePositionTrend(lastStandingsCache);
   document.getElementById('standings-body').innerHTML=s.map((p,i)=>{
     const pos=i+1;
+    const name=p.name||p['Hráč']||'?';
     const pts=Number(p.CELKEM)||0;
     const gap=leader-pts;
-    
-    // Medal badge
+
+    // Medal badge (podium = medal colors, ostatní = barva hráče)
     const medalClass=pos===1?'m1':pos===2?'m2':pos===3?'m3':'mN';
     const medalIcon=pos===1?'🥇':pos===2?'🥈':pos===3?'🥉':'';
     const medalHtml=pos<=3
       ?`<div class="pos-medal ${medalClass}"><span style="font-size:22px">${medalIcon}</span></div>`
-      :`<div class="pos-medal mN"><span class="pos-medal-num">${pos}</span></div>`;
+      :`<div class="pos-medal mN" style="background:${playerColor(name)}22;border-color:${playerColor(name)}55"><span class="pos-medal-num" style="color:${playerColor(name)}">${pos}</span></div>`;
+
+    // Trend šipka (oproti stavu před posledním odjetým závodem)
+    const pr=prevRank[name];
+    let trendHtml='';
+    if(pr){
+      if(pr>pos)trendHtml=`<span class="pos-trend trend-up" title="Posunul ses o ${pr-pos} místo/a nahoru">▲${pr-pos}</span>`;
+      else if(pr<pos)trendHtml=`<span class="pos-trend trend-down" title="Klesl jsi o ${pos-pr} místo/a dolů">▼${pos-pr}</span>`;
+      else trendHtml=`<span class="pos-trend trend-same" title="Beze změny">–</span>`;
+    }
 
     // Left color bar
     const barHtml=pos<=3?`<div class="stand-row-${pos}-bar"></div>`:'';
 
     // Row highlight class
-    const rowCls=pos<=3?`pos-row-${pos}`:'';
+    const isMe=name===currentPlayer;
+    const rowCls=(pos<=3?`pos-row-${pos}`:'')+(isMe?' stand-row-me':'');
 
     // Gap to leader
     const gapHtml=pos===1
@@ -1809,9 +1855,9 @@ function renderStandings(data,headers){
     return`<div class="stand-row-wrap ${rowCls}" id="sr-wrap-${i}">
       <div class="stand-row" onclick="toggleStandRow(${i})">
         ${barHtml}
-        <div>${medalHtml}</div>
+        <div>${medalHtml}${trendHtml}</div>
         <div class="plr-info">
-          <div class="plr-name">${p.name||p['Hráč']||'?'}</div>
+          <div class="plr-name">${name}${isMe?'<span class="me-pill">TY</span>':''}</div>
           <div class="plr-sub">${gapHtml}</div>
         </div>
         <div class="pts-wrap">
@@ -1836,7 +1882,6 @@ function toggleStandRow(i){
   d.classList.toggle('open',willOpen);
   if(arrow)arrow.classList.toggle('rot',willOpen);
 }
-const STATS_PALETTE=['#e8002d','#3b82f6','#f5c400','#00e676','#a78bfa','#fb923c'];
 let chartRangeStart=0,chartRangeEnd=null,chartRangeLastN=null;
 function setChartRangePreset(preset){
   document.querySelectorAll('.chart-range-btn').forEach(b=>b.classList.toggle('active',b.dataset.range===String(preset)));
@@ -1864,7 +1909,7 @@ function buildStatsChart(){
     return;
   }
   const players=cache.data.map(p=>p.name||p['Hráč']||'?');
-  const colors={};players.forEach((p,i)=>colors[p]=STATS_PALETTE[i%STATS_PALETTE.length]);
+  const colors={};players.forEach(p=>colors[p]=playerColor(p));
   const fullSeries={};
   players.forEach(name=>{
     const row=cache.data.find(r=>(r.name||r['Hráč'])===name)||{};
@@ -2003,6 +2048,47 @@ function computeAchievements(player){
   const bonusTier=tierFor(bonusCount,hitBase);
   if(bonusTier)badges.push({icon:'💥',label:'Bonusový král',desc:bonusCount+'x získaný bonus za 3+ trefy',tier:bonusTier});
   return badges;
+}
+function checkNewAchievements(){
+  if(!currentPlayer)return;
+  const badges=computeAchievements(currentPlayer);
+  const key='f1_badges_seen_'+currentPlayer;
+  let prev={};
+  try{prev=JSON.parse(localStorage.getItem(key)||'{}');}catch(e){}
+  const tierRank={bronze:1,silver:2,gold:3};
+  const now={};
+  const newly=[];
+  badges.forEach(b=>{
+    now[b.label]=b.tier;
+    if(!prev[b.label]||tierRank[b.tier]>tierRank[prev[b.label]])newly.push(b);
+  });
+  const hadPrev=Object.keys(prev).length>0;
+  localStorage.setItem(key,JSON.stringify(now));
+  if(newly.length&&hadPrev){
+    newly.forEach((b,i)=>setTimeout(()=>celebrateBadge(b),i*1600));
+  }
+}
+function celebrateBadge(b){
+  const tierNames={bronze:'🥉 Bronze',silver:'🥈 Silver',gold:'🥇 Gold'};
+  toast('🎉 Nový odznak! '+b.icon+' '+b.label+' — '+(tierNames[b.tier]||''),'success');
+  spawnConfetti();
+}
+function spawnConfetti(){
+  const colors=['#e8002d','#f5c400','#3b82f6','#00e676','#a78bfa'];
+  const layer=document.createElement('div');
+  layer.className='confetti-layer';
+  for(let i=0;i<26;i++){
+    const p=document.createElement('span');
+    p.className='confetti-piece';
+    p.style.left=(Math.random()*100)+'vw';
+    p.style.background=colors[i%colors.length];
+    p.style.animationDelay=(Math.random()*0.4)+'s';
+    p.style.animationDuration=(1.6+Math.random()*0.9)+'s';
+    p.style.transform='rotate('+Math.floor(Math.random()*360)+'deg)';
+    layer.appendChild(p);
+  }
+  document.body.appendChild(layer);
+  setTimeout(()=>layer.remove(),2800);
 }
 function showBadgeInfo(el){
   const tierNames={bronze:'🥉 Bronze',silver:'🥈 Silver',gold:'🥇 Gold'};
@@ -2555,9 +2641,10 @@ function renderPlayerPickCards(){
     const cnt=allTips.filter(t=>t.player===p).length;
     const init=p.slice(0,2).toUpperCase();
     const sel=selPlayer===p;
+    const col=playerColor(p);
     return`<div class="pcard ${sel?'selected':''}" onclick="pickPlayer('${p}')">
       <div class="pcard-check">✓</div>
-      <div class="pcard-avatar">${init}</div>
+      <div class="pcard-avatar" style="background:${col}22;border:1px solid ${col}55;color:${col}">${init}</div>
       <div class="pcard-name">${p}</div>
       <div class="pcard-sub">${cnt} tip${cnt===1?'':"ů"}</div>
     </div>`;
@@ -2570,7 +2657,10 @@ function showRacesForPlayer(){
   document.getElementById('player-pick-screen').style.display='none';
   document.getElementById('races-section').style.display='block';
   document.getElementById('tip-pg-sub').textContent='Vyber závodní víkend';
-  document.getElementById('apb-avatar').textContent=selPlayer.slice(0,2).toUpperCase();
+  const apbAvatar=document.getElementById('apb-avatar');
+  apbAvatar.textContent=selPlayer.slice(0,2).toUpperCase();
+  const col=playerColor(selPlayer);
+  apbAvatar.style.background=col+'26';apbAvatar.style.borderColor=col+'66';apbAvatar.style.color=col;
   document.getElementById('apb-name').textContent=selPlayer;
   bar.classList.add('show');
   renderWeekends();
@@ -2736,8 +2826,8 @@ function init(){
   selPlayer=null;
 }
 init();
-loadResults().then(()=>{renderLastRaceCard();renderStatsView();});
-loadTips().then(()=>{renderLastRaceCard();renderCountdownHero();renderStatsView();});
+loadResults().then(()=>{renderLastRaceCard();renderStatsView();checkNewAchievements();});
+loadTips().then(()=>{renderLastRaceCard();renderCountdownHero();renderStatsView();checkNewAchievements();});
 
 // ─── Last race score card (per-player points breakdown, shown on home page) ───
 function findLastScoredRace(){
