@@ -20,7 +20,7 @@
   --text:#f0f0f0;--text2:#c0c0c0;--muted:#5a5a5a;--muted2:#888;
   --gold:#f5c400;--silver:#a8a8b3;--bronze:#cd7f32;
   --green:#00e676;--green2:rgba(0,230,118,0.12);
-  --purple:#b39ddb;--purple2:rgba(179,157,219,0.12);
+  --purple:#9a9aa4;--purple2:rgba(154,154,164,0.14);
   --amber:#ffab40;--amber2:rgba(255,171,64,0.12);
   --red2dim:rgba(232,0,45,0.1);
 }
@@ -41,12 +41,14 @@ header{position:sticky;top:0;z-index:300;background:rgba(8,8,8,0.92);backdrop-fi
 .f1logo span{font-family:'Bebas Neue',sans-serif;font-size:26px;color:#fff;line-height:1;letter-spacing:-1px}
 .hdr-sep{width:1px;height:26px;background:var(--line2);margin-right:18px}
 .hdr-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:4px;color:var(--muted2);white-space:nowrap}
-.hdr-nav{margin-left:auto;display:flex;gap:2px;align-items:center}
+.hdr-nav{display:flex;gap:2px;align-items:center;flex-shrink:0}
+.hdr-scroll{display:flex;align-items:center;margin-left:auto;gap:0;max-width:100%}
 .nav-btn{background:transparent;border:none;color:var(--muted2);padding:8px 16px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:500;transition:all .18s;font-family:'Inter',sans-serif;letter-spacing:.2px}
 .nav-btn:hover{color:var(--text);background:rgba(255,255,255,.06)}
 .nav-btn.active{color:#fff;background:var(--red)}
 .nav-btn.admin-btn{color:var(--amber)}
 .nav-btn.admin-btn.active{background:rgba(255,171,64,.15);color:var(--amber);border:1px solid rgba(255,171,64,.2)}
+.nav-ico{display:inline-block;vertical-align:-2px;margin-right:1px}
 
 main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .view{display:none}.view.active{display:block;animation:fadeIn .2s ease}
@@ -132,6 +134,8 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .drv-table td:first-child{text-align:left;padding-left:4px;font-weight:700;color:var(--text);position:sticky;left:0;background:var(--bg2);z-index:1}
 .drv-table tr:last-child td{border-bottom:none}
 .drv-table tr:hover td{background:rgba(255,255,255,.02)}
+.champ-table{min-width:0 !important}
+.champ-table th:first-child,.champ-table td:first-child{position:static !important}
 @media(max-width:700px){
   .drv-table{font-size:12px}
 }
@@ -196,7 +200,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .wknd.is-next .wknd-head{background:rgba(232,0,45,.04)}
 .wknd-flag{font-size:20px;line-height:1;flex-shrink:0}
 .wknd-name{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;flex:1}
-.sprint-pill{font-size:10px;font-weight:700;letter-spacing:1.5px;padding:3px 9px;border-radius:5px;background:var(--purple2);color:var(--purple);border:1px solid rgba(179,157,219,.25)}
+.sprint-pill{font-size:10px;font-weight:700;letter-spacing:1.5px;padding:3px 9px;border-radius:5px;background:var(--purple2);color:var(--purple);border:1px solid var(--line2)}
 .wknd-date{font-size:12px;color:var(--muted2);white-space:nowrap}
 .wknd-badge{font-size:10px;font-weight:700;letter-spacing:1.5px;padding:3px 10px;border-radius:6px;white-space:nowrap}
 .wb-done{background:var(--green2);color:var(--green);border:1px solid rgba(0,230,118,.2)}
@@ -234,7 +238,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 }
 .form-race-nm{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:2px}
 .form-race-dt{color:var(--muted2);font-size:13px;margin-top:2px}
-.sprint-badge{background:var(--purple2);color:var(--purple);border:1px solid rgba(179,157,219,.3);font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 11px;border-radius:5px}
+.sprint-badge{background:var(--purple2);color:var(--purple);border:1px solid var(--line2);font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 11px;border-radius:5px}
 .form-bd{padding:24px}
 
 .sec-tag{font-size:10px;font-weight:700;letter-spacing:2.5px;color:var(--muted);text-transform:uppercase;margin-bottom:14px;display:flex;align-items:center;gap:12px}
@@ -384,7 +388,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .lrc-breakdown{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
 .lrc-item{background:var(--bg4);border:1px solid var(--line);border-radius:8px;padding:9px 2px;text-align:center}
 .lrc-item-val{font-family:'Bebas Neue',sans-serif;font-size:17px}
-.lrc-item-lbl{font-size:8px;color:var(--muted2);letter-spacing:1px;margin-top:3px;text-transform:uppercase}
+.lrc-item-lbl{font-size:10px;color:var(--muted2);letter-spacing:0.8px;margin-top:3px;text-transform:uppercase}
 .lrc-compare{margin-top:16px;border-top:1px solid var(--line);padding-top:6px}
 .lrc-compare-hd{display:grid;grid-template-columns:44px 1fr 1fr;gap:8px;padding:8px 4px 6px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 .lrc-compare-row{display:grid;grid-template-columns:44px 1fr 1fr;gap:8px;padding:8px 4px;font-size:12px;border-top:1px solid var(--line);align-items:center}
@@ -538,7 +542,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 
 .pts-wrap { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; }
 .pts-big { font-family: 'Bebas Neue', sans-serif; font-size: 28px; color: var(--red); letter-spacing: -1px; line-height: 1; }
-.pts-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+.pts-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; color: var(--muted); text-transform: uppercase; }
 
 .stand-row-1-bar {
   position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
@@ -567,7 +571,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
   padding: 2px 8px; border-radius: 4px; white-space: nowrap; flex-shrink: 0;
 }
 .dl-open   { color: var(--muted); background: transparent; }
-.dl-today  { color: #60a5fa; background: rgba(96,165,250,.1); border: 1px solid rgba(96,165,250,.2); }
+.dl-today  { color: var(--muted2); background: rgba(255,255,255,.05); border: 1px solid var(--line2); }
 .dl-soon   { color: var(--amber); background: rgba(255,171,64,.1); border: 1px solid rgba(255,171,64,.25); animation: pulse-amber 2s ease-in-out infinite; }
 .dl-urgent { color: var(--red); background: rgba(232,0,45,.1); border: 1px solid rgba(232,0,45,.3); animation: pulse-red 1s ease-in-out infinite; }
 .dl-locked { color: var(--muted); background: rgba(255,255,255,.04); border: 1px solid var(--line); letter-spacing: 1.5px; }
@@ -599,7 +603,7 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 .sdl-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
 .sdl-val{font-size:12px;font-weight:700;white-space:nowrap}
 .dl-open .sdl-lbl,.dl-open .sdl-val{color:var(--muted2)}
-.dl-today .sdl-lbl,.dl-today .sdl-val{color:#60a5fa}
+.dl-today .sdl-lbl,.dl-today .sdl-val{color:var(--text2)}
 .dl-soon .sdl-lbl,.dl-soon .sdl-val{color:var(--amber)}
 .dl-soon .sdl-val{animation:pulseDl 2s ease-in-out infinite}
 .dl-urgent .sdl-lbl,.dl-urgent .sdl-val{color:var(--red);font-weight:900}
@@ -656,24 +660,24 @@ main{max-width:1300px;margin:0 auto;padding:32px 24px}
 }
 
 /* ══ REDESIGN — šedá paleta ══ */
+/* ══ ZESVĚTLENÍ & VIDITELNOST ══ */
 body.theme-dark {
-  --bg:     #0e0e10 !important;
-  --bg2:    #161618 !important;
-  --bg3:    #1e1e21 !important;
-  --bg4:    #262629 !important;
-  --line:   rgba(255,255,255,0.08) !important;
-  --line2:  rgba(255,255,255,0.14) !important;
-  --line3:  rgba(255,255,255,0.22) !important;
-  --text:   #f2f2f2 !important;
-  --text2:  #c8c8cc !important;
-  --muted:  #72727a !important;
-  --muted2: #a0a0aa !important;
+  --bg:     #111114 !important;
+  --bg2:    #1a1a1e !important;
+  --bg3:    #232328 !important;
+  --bg4:    #2c2c32 !important;
+  --line:   rgba(255,255,255,0.10) !important;
+  --line2:  rgba(255,255,255,0.17) !important;
+  --line3:  rgba(255,255,255,0.26) !important;
+  --text:   #f4f4f6 !important;
+  --text2:  #d0d0d8 !important;
+  --muted:  #7a7a85 !important;
+  --muted2: #ababb8 !important;
 }
-/* Header — jemnější sklo */
+/* Méně průhledný header */
 body.theme-dark header {
-  background: rgba(14,14,16,0.94) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.10) !important;
-  box-shadow: 0 1px 0 rgba(255,255,255,0.04), 0 4px 24px rgba(0,0,0,0.5) !important;
+  background: rgba(17,17,20,0.96) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.12) !important;
 }
 /* F1 logo wrapper */
 body.theme-dark .f1logo-img {
@@ -700,21 +704,19 @@ body.theme-dark .stand-wrap, body.theme-dark .wknd, body.theme-dark .tip-form, b
   border-color: rgba(255,255,255,0.09) !important;
   box-shadow: 0 1px 3px rgba(0,0,0,0.3) !important;
 }
-/* Session karty — hover efekt */
 body.theme-dark .session:hover {
-  background: rgba(255,255,255,0.04) !important;
+  background: rgba(255,255,255,0.06) !important;
 }
 body.theme-dark .session.is-active {
   background: rgba(232,0,45,0.08) !important;
   border-left: 2px solid var(--red);
 }
-/* Weekend header */
 body.theme-dark .wknd-head {
-  background: rgba(255,255,255,0.025) !important;
+  background: rgba(255,255,255,0.04) !important;
 }
 body.theme-dark .wknd.is-next {
-  border-color: rgba(232,0,45,0.5) !important;
-  box-shadow: 0 0 0 1px rgba(232,0,45,0.12), 0 4px 20px rgba(232,0,45,0.08) !important;
+  background: rgba(232,0,45,0.07) !important;
+  border-color: rgba(232,0,45,0.55) !important;
 }
 body.theme-dark .wknd.is-next .wknd-head {
   background: rgba(232,0,45,0.06) !important;
@@ -741,11 +743,10 @@ body.theme-dark .picker-option:hover {
 body.theme-dark .picker-option.selected {
   background: rgba(232,0,45,0.1) !important;
 }
-/* Form inputs — jemnější */
+/* Inputs */
 body.theme-dark .fsel, body.theme-dark .finput {
-  background: rgba(255,255,255,0.04) !important;
-  border-color: rgba(255,255,255,0.12) !important;
-  color: #f0f0f0 !important;
+  background: rgba(255,255,255,0.06) !important;
+  border-color: rgba(255,255,255,0.14) !important;
 }
 body.theme-dark .fsel:focus, body.theme-dark .finput:focus {
   background: rgba(255,255,255,0.06) !important;
@@ -760,16 +761,11 @@ body.theme-dark .toggle:hover {
   background: rgba(255,255,255,0.08) !important;
   border-color: rgba(255,255,255,0.18) !important;
 }
-/* Player karty */
 body.theme-dark .pcard {
-  background: rgba(255,255,255,0.03) !important;
-  border-color: rgba(255,255,255,0.08) !important;
-  transition: all 0.2s cubic-bezier(0.34,1.56,0.64,1) !important;
+  background: rgba(255,255,255,0.045) !important;
 }
 body.theme-dark .pcard:hover {
-  background: rgba(255,255,255,0.06) !important;
-  border-color: rgba(255,255,255,0.18) !important;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4) !important;
+  background: rgba(255,255,255,0.09) !important;
 }
 body.theme-dark .pcard.selected {
   background: rgba(232,0,45,0.08) !important;
@@ -785,40 +781,19 @@ body.theme-dark .btn-red:hover, body.theme-dark .btn-pri:hover {
   box-shadow: 0 6px 24px rgba(232,0,45,0.45) !important;
   transform: translateY(-1px) !important;
 }
-/* Race grid karty */
+/* Res cards */
 body.theme-dark .res-card {
-  background: rgba(255,255,255,0.03) !important;
-  border-color: rgba(255,255,255,0.08) !important;
+  background: rgba(255,255,255,0.04) !important;
+  border-color: rgba(255,255,255,0.10) !important;
 }
 body.theme-dark .res-card:hover {
-  background: rgba(255,255,255,0.06) !important;
-  border-color: rgba(232,0,45,0.4) !important;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.4) !important;
+  background: rgba(255,255,255,0.08) !important;
 }
 /* Scrollbar */
 body.theme-dark ::-webkit-scrollbar { width: 4px; }
 body.theme-dark ::-webkit-scrollbar-track { background: transparent; }
 body.theme-dark ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
 body.theme-dark ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
-/* ══ ZESVĚTLENÍ & VIDITELNOST ══ */
-body.theme-dark {
-  --bg:     #111114 !important;
-  --bg2:    #1a1a1e !important;
-  --bg3:    #232328 !important;
-  --bg4:    #2c2c32 !important;
-  --line:   rgba(255,255,255,0.10) !important;
-  --line2:  rgba(255,255,255,0.17) !important;
-  --line3:  rgba(255,255,255,0.26) !important;
-  --text:   #f4f4f6 !important;
-  --text2:  #d0d0d8 !important;
-  --muted:  #7a7a85 !important;
-  --muted2: #ababb8 !important;
-}
-/* Méně průhledný header */
-body.theme-dark header {
-  background: rgba(17,17,20,0.96) !important;
-  border-bottom: 1px solid rgba(255,255,255,0.12) !important;
-}
 /* Wknd karty světlejší */
 body.theme-dark .wknd {
   background: rgba(255,255,255,0.045) !important;
@@ -828,19 +803,9 @@ body.theme-dark .wknd:hover {
   background: rgba(255,255,255,0.07) !important;
   border-color: rgba(255,255,255,0.20) !important;
 }
-body.theme-dark .wknd-head {
-  background: rgba(255,255,255,0.04) !important;
-}
-body.theme-dark .wknd.is-next {
-  background: rgba(232,0,45,0.07) !important;
-  border-color: rgba(232,0,45,0.55) !important;
-}
 /* Session světlejší */
 body.theme-dark .session {
   border-right-color: rgba(255,255,255,0.10) !important;
-}
-body.theme-dark .session:hover {
-  background: rgba(255,255,255,0.06) !important;
 }
 /* Standing rows */
 body.theme-dark .stand-wrap {
@@ -858,12 +823,6 @@ body.theme-dark .tip-card {
 }
 body.theme-dark .tip-card:hover {
   background: rgba(255,255,255,0.07) !important;
-}
-body.theme-dark .pcard {
-  background: rgba(255,255,255,0.045) !important;
-}
-body.theme-dark .pcard:hover {
-  background: rgba(255,255,255,0.09) !important;
 }
 body.theme-dark .legend-box, body.theme-dark .scores-card {
   background: rgba(255,255,255,0.04) !important;
@@ -884,19 +843,6 @@ body.theme-dark .picker-btn:hover {
   background: rgba(255,255,255,0.10) !important;
   border-color: rgba(255,255,255,0.24) !important;
 }
-/* Inputs */
-body.theme-dark .fsel, body.theme-dark .finput {
-  background: rgba(255,255,255,0.06) !important;
-  border-color: rgba(255,255,255,0.14) !important;
-}
-/* Res cards */
-body.theme-dark .res-card {
-  background: rgba(255,255,255,0.04) !important;
-  border-color: rgba(255,255,255,0.10) !important;
-}
-body.theme-dark .res-card:hover {
-  background: rgba(255,255,255,0.08) !important;
-}
 /* Sec groups */
 body.theme-dark .sec-group-hd {
   background: rgba(255,255,255,0.05) !important;
@@ -909,7 +855,6 @@ body.theme-dark .sec-group-hd:hover {
 body.theme-dark .form-hd {
   background: rgba(232,0,45,0.10) !important;
 }
-
 /* ══ SVĚTLÝ REŽIM ══ */
 body.theme-light {
   --bg:     #f3f3f5 !important;
@@ -1079,15 +1024,28 @@ body.theme-light ::-webkit-scrollbar-thumb:hover {
     display: none !important;
   }
   .hdr-nav {
-    gap: 1px !important;
+    gap: 2px !important;
   }
+  .hdr-scroll {
+    overflow: visible !important;
+  }
+  .theme-toggle {
+    flex-shrink: 0 !important;
+    width: 30px !important;
+    height: 30px !important;
+    margin-left: 6px !important;
+    font-size: 13px !important;
+  }
+  /* Na mobilu jen ikony, bez textu - ať se vejde celá navigace i přepínač motivu naráz */
   .nav-btn {
-    padding: 7px 9px !important;
-    font-size: 11px !important;
-    letter-spacing: 0 !important;
-    border-radius: 6px !important;
+    padding: 7px 8px !important;
+    font-size: 15px !important;
+    border-radius: 8px !important;
+    min-width: 30px !important;
   }
-  /* Skryj emoji ikony na velmi malých telefonech a nech jen text */
+  .nav-btn-label {
+    display: none !important;
+  }
   main {
     padding: 16px 12px !important;
   }
@@ -1095,8 +1053,13 @@ body.theme-light ::-webkit-scrollbar-thumb:hover {
 
 @media (max-width: 380px) {
   .nav-btn {
-    padding: 6px 7px !important;
-    font-size: 10px !important;
+    padding: 6px 6px !important;
+    font-size: 14px !important;
+  }
+  .theme-toggle {
+    width: 28px !important;
+    height: 28px !important;
+    margin-left: 4px !important;
   }
 }
 
@@ -1144,22 +1107,22 @@ body.theme-light .theme-toggle:hover{background:rgba(0,0,0,.05)}
     <div class="lo-logo"><div class="lo-badge">F1</div><div class="lo-ttl">TIPOVACKA 2026</div></div>
     <div id="lo-s1">
       <div class="lo-h">VYBER SE</div>
-      <div class="lo-sub">Klikni na sve jmeno</div>
+      <div class="lo-sub">Klikni na své jméno</div>
       <div class="lo-grid" id="lo-grid"></div>
       <div class="lo-load" id="lo-l1"><div class="lo-spin"></div></div>
       <div class="lo-err" id="lo-e1"></div>
     </div>
     <div id="lo-s2">
-      <button class="lo-back" onclick="loBack()">&#8592; Zpet</button>
+      <button class="lo-back" onclick="loBack()">&#8592; Zpět</button>
       <div class="lo-who">
         <div class="lo-wh-av" id="lo-wh-av">?</div>
         <div><div class="lo-wh-nm" id="lo-wh-nm"></div><div class="lo-wh-lb" id="lo-wh-lb"></div></div>
       </div>
       <div id="lo-cr" style="display:none">
-        <div class="lo-mode lo-new">Novy ucet</div>
-        <div class="lo-field"><label class="lo-lbl">Nove heslo</label><input class="lo-inp" type="password" id="lo-p1" placeholder="Min. 4 znaky"></div>
+        <div class="lo-mode lo-new">Nový účet</div>
+        <div class="lo-field"><label class="lo-lbl">Nové heslo</label><input class="lo-inp" type="password" id="lo-p1" placeholder="Min. 4 znaky"></div>
         <div class="lo-field"><label class="lo-lbl">Heslo znovu</label><input class="lo-inp" type="password" id="lo-p2" placeholder="Zopakuj heslo"></div>
-        <button class="lo-btn" id="lo-bcr" onclick="loCreate()">VYTVORIT HESLO</button>
+        <button class="lo-btn" id="lo-bcr" onclick="loCreate()">VYTVOŘIT HESLO</button>
       </div>
       <div id="lo-li" style="display:none">
         <div class="lo-mode lo-pw">Zadej heslo</div>
@@ -1185,14 +1148,16 @@ body.theme-light .theme-toggle:hover{background:rgba(0,0,0,.05)}
 </div>
     
     <div class="hdr-title">TIPOVAČKA 2026</div>
-    <nav class="hdr-nav">
-      <button class="nav-btn active" onclick="showView('standings',event)">🏆 Pořadí</button>
-      <button class="nav-btn" onclick="showView('tip',event)">✏ Tipovat</button>
-      <button class="nav-btn" onclick="showView('saved',event)">📋 Tipy</button>
-      <button class="nav-btn" onclick="showView('stats',event)">📈 Statistiky</button>
-      <button class="nav-btn admin-btn" onclick="showViewAdmin(this)">⚑ Výsledky</button>
-    </nav>
-    <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Přepnout světlý/tmavý režim">🌙</button>
+    <div class="hdr-scroll">
+      <nav class="hdr-nav">
+        <button class="nav-btn active" onclick="showView('standings',event)"><svg class="nav-ico" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="1.5" y="9" width="3.5" height="5.5"/><rect x="6.25" y="5.5" width="3.5" height="9"/><rect x="11" y="2.5" width="3.5" height="12"/></svg><span class="nav-btn-label"> Pořadí</span></button>
+        <button class="nav-btn" onclick="showView('tip',event)"><svg class="nav-ico" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2.5l2.5 2.5-8 8-3 .5.5-3z"/></svg><span class="nav-btn-label"> Tipovat</span></button>
+        <button class="nav-btn" onclick="showView('saved',event)"><svg class="nav-ico" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><line x1="2" y1="4" x2="14" y2="4"/><line x1="2" y1="8" x2="14" y2="8"/><line x1="2" y1="12" x2="14" y2="12"/></svg><span class="nav-btn-label"> Tipy</span></button>
+        <button class="nav-btn" onclick="showView('stats',event)"><svg class="nav-ico" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="2,12 6,7 9,9.5 14,3"/></svg><span class="nav-btn-label"> Statistiky</span></button>
+        <button class="nav-btn admin-btn" onclick="showViewAdmin(this)"><svg class="nav-ico" width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="2" x2="3" y2="14"/><path d="M3 3h9l-2.2 3L12 9H3"/></svg><span class="nav-btn-label"> Výsledky</span></button>
+      </nav>
+      <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Přepnout světlý/tmavý režim">🌙</button>
+    </div>
   </div>
 </header>
 
@@ -2067,15 +2032,15 @@ function renderChampionship(driversStd,teamsStd,session,numToName){
   const tEl=document.getElementById('champ-teams-table');
   if(dEl&&Array.isArray(driversStd)){
     const sorted=driversStd.slice().sort((a,b)=>a.position_current-b.position_current);
-    dEl.innerHTML=`<table class="drv-table"><thead><tr><th>#</th><th>Jezdec</th><th>Body</th></tr></thead><tbody>${
+    dEl.innerHTML=`<div class="drv-table-wrap"><table class="drv-table champ-table"><thead><tr><th>#</th><th>Jezdec</th><th>Body</th></tr></thead><tbody>${
       sorted.map(d=>`<tr><td>${d.position_current}</td><td>${numToName[d.driver_number]||('#'+d.driver_number)}</td><td>${d.points_current}</td></tr>`).join('')
-    }</tbody></table>`;
+    }</tbody></table></div>`;
   }
   if(tEl&&Array.isArray(teamsStd)){
     const sorted=teamsStd.slice().sort((a,b)=>a.position_current-b.position_current);
-    tEl.innerHTML=`<table class="drv-table"><thead><tr><th>#</th><th>Tým</th><th>Body</th></tr></thead><tbody>${
+    tEl.innerHTML=`<div class="drv-table-wrap"><table class="drv-table champ-table"><thead><tr><th>#</th><th>Tým</th><th>Body</th></tr></thead><tbody>${
       sorted.map(t=>`<tr><td>${t.position_current}</td><td>${t.team_name}</td><td>${t.points_current}</td></tr>`).join('')
-    }</tbody></table>`;
+    }</tbody></table></div>`;
   }
 }
 function showView(v,e){document.querySelectorAll('.view').forEach(el=>el.classList.remove('active'));document.querySelectorAll('.nav-btn').forEach(el=>el.classList.remove('active'));document.getElementById('view-'+v).classList.add('active');if(e&&e.target)e.target.classList.add('active');if(v==='saved'){loadTips();renderSavedTips();}if(v==='tip'){loadTips();renderPlayerPickCards();if(selPlayer)showRacesForPlayer();}if(v==='stats'){loadTips();renderStatsView();if(!lastStandingsCache)loadStandings().then(renderStatsView);}}
